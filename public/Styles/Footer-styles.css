@@ -1,0 +1,70 @@
+
+
+.footer-container {
+
+  position: relative;
+
+ /* opción colocada para que la altura del contenedor se adapte al contenido de los hijos */
+
+  display: flex;
+
+  flex-direction: column;
+
+ /*****************************************************************************************/
+
+  width: calc(100vw);
+
+  max-width: 100vw;
+
+  font-family: 'Roboto', sans-serif;
+
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/../images/FONDO.png");
+  background-position: 100% 100%;
+
+  min-height: 200px;
+
+}
+
+.PADSub{
+  max-width: 100vw !important;
+}
+
+.footer-container h1 p {
+  color: #81029b;
+}
+
+.col-3-text { 
+
+    text-align: center;
+
+    color: white;
+
+    font-family: 'Roboto', sans-serif;
+
+    }
+
+    
+
+.container .row .col-3-text p img{ max-width: 194px; }
+
+    
+
+.footer-container p { 
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    text-align: center;
+
+    color: white;
+
+    font-family: 'Roboto', sans-serif;
+    font-weight: bolder;
+}
+
+.footer-container .fa { 
+
+  color: white;
+
+}

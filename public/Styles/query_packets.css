@@ -1,0 +1,135 @@
+<style>
+
+.table_container {
+    display: block;
+    height: auto;
+    width: 100vw;
+    margin: auto;
+    padding: 10px 0px;
+    padding-bottom: 70px;
+}
+
+
+body, head {
+  overflow-x: hidden;
+}
+
+
+main h2 {
+  text-align: left; 
+  align-content: left;
+  padding-left: 10px;
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 28px;
+  color: white;
+  background-color: rgb(175, 103, 206);
+}
+
+.filter_container {
+        width: 100vw;
+        margin: 0 auto;
+        background-color: rgb(216, 170, 238);
+        color: rgb(160, 85, 192);
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        padding-left: 10px;
+        margin-bottom: 5px;
+    }
+
+input:checked + .custom-control-input {
+  background-color: green;
+}
+
+.row_selector {
+      width: 100vw;
+      margin: 0 auto;
+      background-color: white;
+  }
+
+.list_container {
+        text-align: center; 
+        align-content: center;
+        width: 60vw;
+        margin: 0 auto;
+        background-color: #e7e7f2;
+    }
+
+div.dataTables_wrapper {
+        width: 90vw;
+        margin: 0 auto;
+    }
+
+/* Set a style for the submit button */
+.btn, .btn2 {
+  background-color: #3cf436;
+  color: rgb(160, 85, 192);
+  padding: 16px 32px;
+  border: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+  transition: 0.3s;
+  padding: 8px 16px;
+}
+
+.btn2 {
+  background-color: #3cf436;
+  width: auto;
+  border-radius: 5px;
+  color: rgb(160, 85, 192);
+}
+
+.btn:hover, .btn2:hover {
+  opacity: 1;
+}
+
+.formu {
+  text-align: center; 
+  align-content: center;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/andrew-neel-cckf4TsHAuw-unsplash.jpg");
+  background-position:50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  align-content: center;
+  display: block;
+  min-height: calc( 100vh - 200px);
+  position: relative;
+  height: auto;
+  vertical-align: middle;
+}
+
+.formu h2 {
+  text-align: center; 
+  margin: auto;
+  display: block;
+  font: Arial, Helvetica, sans-serif;
+  color: blue;
+  background-color: #b6b6bf;
+  padding: 5px 0px;
+  width: 60vw;
+  vertical-align: middle;
+}
+
+.respuesta {
+  text-align: center; 
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/chuttersnap-BNBA1h-NgdY-unsplash.jpg");
+  background-position:50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  min-height: calc( 100vh - 200px);
+  position: relative;
+  height: auto;
+  vertical-align: middle;
+}
+    
+.row{
+  margin: auto;
+}
+</style>
