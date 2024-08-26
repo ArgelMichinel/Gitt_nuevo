@@ -40,6 +40,18 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'administ' => [
+            'driver' => 'session',
+            'provider' => 'administ',
+        ],
+        'cadetes' => [
+            'driver' => 'session',
+            'provider' => 'cadetes',
+        ],
+        'clientes' => [
+            'driver' => 'session',
+            'provider' => 'clientes',
+        ],
     ],
 
     /*
@@ -63,6 +75,21 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'administ' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\administ::class),
+        ],
+
+        'cadetes' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\cadetes::class),
+        ],
+
+        'clientes' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\clientes::class),
         ],
 
         // 'users' => [
@@ -94,6 +121,27 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        
+        'administ' => [
+            'provider' => 'administ',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_administ'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        
+        'cadetes' => [
+            'provider' => 'cadetes',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_cadetes'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        
+        'clientes' => [
+            'provider' => 'clientes',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_clientes'),
             'expire' => 60,
             'throttle' => 60,
         ],

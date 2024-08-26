@@ -11,13 +11,13 @@
   
     <h2>Bienvenido</h2>
     <div id="expandible" class="topnav-responsive">
-      <div id="cambio_acc"><a class="underH" href="{{ route('login_cadete') }}">>Acc. Adminitrador</a></div>
+          <div id="cambio_acc"><a class="underH" href="{{ route('login_admin') }}">Acc. Clientes</a></div>
     </div>
   
     <div class="formu row">
       <form action="" method="post" class="container-reg col-lg-12">
         @csrf
-        <h1>Login administrador</h1>
+        <h1>Login Clientes</h1>
         
         <label for="email"><b>email</b></label>
         <input type="text" placeholder="Introduzca el email" name="email" id="email" required>

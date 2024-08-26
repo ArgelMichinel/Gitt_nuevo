@@ -33,20 +33,24 @@
 </style>
 
 <body>
+
+    @guest
+        <x-header1></x-header1>
+    @endguest
+
+    @auth('admin')
+        <x-header2></x-header2>
+    @endauth
     
-<main id="main">
-<!*********************************************************************** Output>    
-@yield('output')
-    
-<!*********************************************************************** Footer>
-    <div class="footer-container">
+    <main id="main">
         
-    
-    <x-footer></x-footer>
+        @yield('output')
+            
+        <div class="footer-container">  
+            <x-footer></x-footer>
+        </div>    
         
-    </div>    
-    
-</main>
+    </main>
 
 </body>
 <script type="text/javascript" src="{{ asset('JS/H-Script.js') }}"></script>
