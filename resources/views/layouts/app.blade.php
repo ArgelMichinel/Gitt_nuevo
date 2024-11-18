@@ -13,6 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <title>@yield('title')</title>
+<link rel="stylesheet" href="{{ asset('Styles/H-styles.css') }}">
 <link rel="stylesheet" href="{{ asset('Styles/SN-styles.css') }}">
 <link rel="stylesheet" href="{{ asset('Styles/Footer-styles.css') }}">
 <!Estilo agregado para poder alinear div facilmente. Se usa con ul class="nav justify-content-end">
@@ -34,11 +35,11 @@
 
 <body>
 
-    @guest
+{{--     @guest
         <x-header1></x-header1>
-    @endguest
+    @endguest --}}
 
-    @auth('admin')
+    @auth('administ')
         <x-header2></x-header2>
     @endauth
     

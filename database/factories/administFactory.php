@@ -22,7 +22,7 @@ class administFactory extends Factory
             'name' => 'administ_pru',
             'email' => 'administ@administ.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('burro17071984'),
+            'password' => Hash::make('gato17071984'),
             'remember_token' => Str::random(10),
         ];
     }

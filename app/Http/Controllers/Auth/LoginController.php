@@ -7,9 +7,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\administ;
+use App\Models\cadetes;
+use App\Models\clientes;
 
 class LoginController extends Controller
 {
+
     public function ingreso (Request $request) {
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
         $perfil = $this->perfil($request);
@@ -17,7 +20,7 @@ class LoginController extends Controller
         //Si el usuario está autentificado 
         if (Auth::guard($perfil)->check()) {
             
-            $this->redirect_authenticated($perfil);
+            return $this->redirect_authenticated($perfil);
 
         }
 
@@ -42,11 +45,11 @@ class LoginController extends Controller
         if (Auth::guard($perfil)->attempt($credentials)) {
             $request->session()->regenerate();
 
-            $this->redirect_authenticated($perfil);
+            return $this->redirect_authenticated($perfil);
         }
  
         return back()->withErrors([
-            'email' => 'Las credenciales ingresadas no coinsiden con nuestro registro',
+            'email' => 'Las credenciales ingresadas no coinciden con nuestro registro',
         ])->onlyInput('email');
     }
 
@@ -75,25 +78,29 @@ class LoginController extends Controller
 
     protected function perfil(Request $request): string {
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
-        if ($request->is('admin/*')) {
+        if ($request->is('admin*')) {
             return 'administ';
-        } elseif ($request->is('cadete/*')) {
+        } elseif ($request->is('cadete*')) {
             return 'cadete';
         } else {
             return 'clientes';
         }
     }
 
-    protected function redirect_authenticated($perfil) {
+    protected function redirect_authenticated($perfil)
+    {
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
         switch ($perfil) {
             case 'administ':
+                /* dd($perfil . " bandera 1"); */
+                /* return redirect()->route('mostrarenvios'); */
                 return redirect()->route('desk_admin');
+                /* dd($perfil . " bandera 2"); */
                 break;
             case 'cadete':
                 return redirect()->route('desk_cadete');
                 break;
-            case 'cliente':
+            case 'clientes':
                 return redirect()->route('desk_client');
                 break;
         }

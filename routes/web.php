@@ -2,19 +2,25 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
+use App\Http\Controllers\Controller_QRgenerator;
 use App\Http\Controllers\ControllerPackets;
+use App\Http\Controllers\ControllerAsignar;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [AuthLoginController::class,'ingreso'])->name('login');
-Route::get('admin/', [AuthLoginController::class,'ingreso_admin'])->name('login_admin');
-Route::get('cadete/', [AuthLoginController::class,'ingreso_cadete'])->name('login_cadete');
 Route::post('/',[AuthLoginController::class,'authenticate'])->name('validar');
+Route::get('admin/', [AuthLoginController::class,'ingreso'])->name('login_admin');
+Route::post('admin/',[AuthLoginController::class,'authenticate'])->name('login_admin');
+Route::get('cadete/', [AuthLoginController::class,'ingreso'])->name('login_cadete');
 Route::get('/logout',[AuthLoginController::class,'logout'])->name('logout');
-Route::get('/logged_packets',[ControllerPackets::class,'mostrar'])->name('mostrarenvios');
+Route::get('/admin/logged_packets',[ControllerPackets::class,'mostrarenvios'])->name('mostrarenvios');  //bloquear solo admin
+Route::post('/admin/logged_packets',[ControllerPackets::class,'crearlista'])->name('crearlista');  //bloquear solo admin
+Route::get('/admin/assign_packets',[ControllerAsignar::class,'ingresoGet'])->name('asignar');  //bloquear solo admin
+Route::get('/admin/QRgenerator/{tag}',[Controller_QRgenerator::class, 'generarQR'])->name('Genera_QR');  //Bloquear sólo admin
 
 
 
-Route::get('/desktop_administrador', function(){
+Route::get('/admin/desktop_administrador', function(){
     return 'Ingreso valido administrador';
 })->middleware('auth:administ')->name('desk_admin');
 

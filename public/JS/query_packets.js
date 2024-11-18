@@ -68,11 +68,43 @@ function constr_list() {
         
     }
     
-    let json_list = JSON.stringify(mat_list);
+    /* let json_list = JSON.stringify(mat_list);
     
-    document.getElementById('values_list').value = json_list;
+    document.getElementById('values_list').value = json_list; */
+
+    let json_list = {
+      "name": document.getElementById('name_list').value,
+      "values": JSON.stringify(mat_list)
+    }
+
+    fetch(window.location.href, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': document.getElementsByName('_token')[0].value
+      },
+      body: JSON.stringify(json_list)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+    document.getElementById("name_list").value = ''
+      
+      for (i=0; i < tr_table.length; i++) {
+          check_td = tr_table[i].children[0].children[0];
+          if (check_td.checked == true){
+              check_td.checked = false;
+            }
+      }
+
+      alert(data.message)
+  })
+  .catch(error => console.error('Error:', error));
+
     
-    document.getElementById('submit_list').click();
+    /* document.getElementById('submit_list').click(); */
+
 }
 
 //////////////////////////////
@@ -90,10 +122,31 @@ document.addEventListener("DOMContentLoaded", function ()    {
         
         //alert(selec_QR);
         let foo = prompt('Copia el QR',selec_QR);
-        window.open('QRgenerator.php?id=' + selec_QR);
+        window.open('QRgenerator/' + selec_QR);
         });
         
     }});
+
+    //////////////////////////////
+    document.addEventListener("DOMContentLoaded", function ()    {
+        var QR_tags = document.getElementsByClassName('fa fa-eye');
+        
+        //let ele_select = document.getElementsByClassName(elemen.id);
+    
+        for (i=0; i < QR_tags.length; i++) {
+            QR_tags[i].addEventListener("click", function() {
+            var selec_QR = this.parentElement.parentElement;
+            //console.log(selec_QR);
+            selec_QR = " Cadete ---  Administrador --- Fecha \n" +
+                       selec_QR.children[19].innerText + ' - ' + selec_QR.children[20].innerText + ' - ' + selec_QR.children[21].innerText + '\n' +
+                       selec_QR.children[22].innerText + ' - ' + selec_QR.children[23].innerText + ' - ' + selec_QR.children[24].innerText + '\n' +
+                       selec_QR.children[25].innerText + ' - ' + selec_QR.children[26].innerText + ' - ' + selec_QR.children[27].innerText + '\n';
+            
+            alert(selec_QR);
+            });
+            
+        }});
+    
 
     //////////////////////////////
     function cambio_cadete() {

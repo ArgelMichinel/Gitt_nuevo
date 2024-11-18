@@ -22,10 +22,25 @@ var ind = 0;
 var mat_ship = [];
 var delet = [];
 var num_pack = 0;
+var Tipo_tienda = "ML";
 var cadete_valido = false;
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("num_pack").innerHTML = num_pack;
 });
+
+/////Esto se hizo para poder escanear los paquetes de Mercadolibre o Tienda nube y agregar el prefijo al parametro escaneado
+function cambiar_tienda() {
+  if (document.getElementById("Tienda_ML").className == "boton_tienda") {
+    document.getElementById("Tienda_ML").className = "boton_tienda_1";
+    document.getElementById("Tienda_TN").className = "boton_tienda";
+    Tipo_tienda = "ML";
+  } else {
+    document.getElementById("Tienda_ML").className = "boton_tienda";
+    document.getElementById("Tienda_TN").className = "boton_tienda_1";
+    Tipo_tienda = "TN";
+  }
+  
+}
 
 function activate_scanner() {
         let scanner;
@@ -76,7 +91,7 @@ function prepare_QRdata(content) {
   let repeti;
     
     repeti = false;
-    shipnum = myObj.id;
+    shipnum = Tipo_tienda + myObj.id;
     
     for (i = 0; i < mat_ship.length; i++) {
       if (shipnum == mat_ship[i]) {

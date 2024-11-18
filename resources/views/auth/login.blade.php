@@ -6,8 +6,6 @@
 
 @section('output')
 <div class="extern">
-    <x-header1></x-header1>
-  
   
     <h2>Bienvenido</h2>
     <div id="expandible" class="topnav-responsive">

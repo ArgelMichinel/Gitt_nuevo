@@ -1,3 +1,5 @@
+@props(['packets', 'clients', 'cadetes', 'admin'])
+
 <div>
     <table id="example" class="display nowrap" style="width:100%">
         <thead>
@@ -21,7 +23,15 @@
                 <th>fec. 1ra visit</th>
                 <th>fec. entreg.</th>
                 <th>fec. no entr.</th>
-                <th>cadete</th>
+                <th>cadete1</th>
+                <th style="display: none;">admin_cad1</th>
+                <th style="display: none;">fec. asig1</th>
+                <th style="display: none;">cadete-2</th>
+                <th style="display: none;">admin_cad2</th>
+                <th style="display: none;">fec. asig2</th>
+                <th style="display: none;">cadete-3</th>
+                <th style="display: none;">admin_cad3</th>
+                <th style="display: none;">fec. asig3</th>
                 <th>Status logis.</th>
                 <th>coment. logist.</th>
                 <th style="display: none;">sticker</th>
@@ -35,12 +45,16 @@
 
                     @foreach ($pack as $key => $value )
 
-                        @if (($key != 'id_num') && ($key != 'status') && ($key != 'sender_id') && ($key != 'city' ) && ($key != 'delivery_preference') && ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')) 
+                        @if (($key != 'id_num') && ($key != 'status') && ($key != 'sender_id') && ($key != 'city' ) && ($key != 'delivery_preference') && 
+                            ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete1') && ($key != 'cadete2') && 
+                            ($key != 'cadete3') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')  && ($key != 'status_logistica')  && 
+                            ($key != 'Latit')  && ($key != 'Longi')  && ($key != 'admin_cad1')  && ($key != 'admin_cad2')  && ($key != 'admin_cad3')  &&
+                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3')) 
                             <td class='{{ $key }}'> {{ $value }}</td>
                         @endif
 
                         @if ($key === 'id_ship')
-                            <td class="id_ship"> {{ $value }} <i class="fa fa-qrcode" aria-hidden="true"></i></td>
+                            <td class="id_ship"> {{ $value }} <i class="fa fa-qrcode" aria-hidden="true"></i> <i class="fa fa-eye" aria-hidden="true"></i></td>
                         @endif
 
                         @if ($key == 'status')
@@ -74,15 +88,42 @@
                             @endswitch  
                         @endif
 
-                        @if ($key === 'sender_id')
+                        @if ($key === 'sender_id')          {{-- Selección de la tabla donde se buscará el cliente sender del paquete --}}
                             <td style="display: none;"> {{ $value }}</td>
-                            @foreach ($clients as $cl => $variab)
-                                @if ($variab['user_id'] === $value)
-                                    <td> {{ $variab['Nombre'] }}</td>
-                                    @break
-                                @endif
-                                
-                            @endforeach
+
+                            @if (substr($pack['id_ship'],0,2) === "ML")   {{-- Si el envío es de MELI --}}
+    
+                                @foreach ($clients as $cl => $variab)
+                                    @if ($variab['id_MELI'] === $value)
+                                        <td> {{ $variab['name'] }}</td>
+                                        @break
+                                    @endif
+                                @endforeach
+
+                            @elseif (substr($pack['id_ship'],0,2) === "TN")   {{-- Si el envío es de Tienda nube --}}
+
+                                @foreach ($clients as $cl => $variab)
+                                    @if ($variab['id_TN'] === $value)
+                                        <td> {{ $variab['Nombre'] }}</td>
+                                        @break
+                                    @endif
+                                @endforeach
+
+                            @elseif (substr($pack['id_ship'],0,2) === "GT")   {{-- Si el envío es de Gitt --}}
+
+                                @foreach ($clients as $cl => $variab)
+                                    @if ($variab['id'] === $value)
+                                        <td> {{ $variab['Nombre'] }}</td>
+                                        @break
+                                    @endif
+                                @endforeach
+
+                            @else {{-- Opción si no se consiguió las siglas del envío (error) --}}
+
+                                <td> {{ $value }}</td>
+
+                            @endif
+                            
                         @endif
 
                         @if ($key === 'sticker')
@@ -110,18 +151,40 @@
                             <td>{{ $value }} {{ $pack['street_number'] }}</td>
                         @endif
 
-                        @if ($key === 'cadete')
+                        @if (($key === 'cadete1') || ($key === 'cadete2') || ($key === 'cadete3'))
                             @foreach ($cadetes as $ct => $variab)
                                 @if ($variab['num_cadete'] == $value)
-                                    <td> {{ $variab['nombre'] }} {{ $variab['apellido'] }}</td>
-                                    @break
+                                    @if ($key === 'cadete1')
+                                        <td> {{ $variab['nombre'] }} {{ $variab['apellido'] }}</td>
+                                        @break
+                                    @else
+                                        <td style="display: none;"> {{ $variab['nombre'] }} {{ $variab['apellido'] }}</td>
+                                        @break
+                                    @endif
                                 @endif
                             @endforeach
                             
                         @endif
 
+                        @if (($key === 'admin_cad1') || ($key === 'admin_cad2') || ($key === 'admin_cad3'))
+                            @foreach ($admin as $id => $variab)
+                                @if ($variab['id'] == $value)
+                                    <td style="display: none;"> {{ $variab['name'] }}</td>
+                                    @break
+                                @endif
+                                @if ($variab['id'] == $admin[count($admin)-1]['id']) 
+                                    <td style="display: none;"> {{ $value }}</td> {{-- Sólo se usa si no se consigue el administrador --}}
+                                @endif
+                            @endforeach
+                            
+                        @endif
+
+                        @if (($key === 'time_cad1') || ($key === 'time_cad2') || ($key === 'time_cad3'))
+                            <td style="display: none;"> {{ $value }}</td>     
+                        @endif
+
                         @if ($key == 'country')
-                            @switch($type)
+                            @switch($value)
                                 @case(1)
                                     <td class="country"> Argentina</td>
                                     @break
@@ -143,7 +206,7 @@
                         @endif
 
                         @if ($key == 'status_logistica')
-                            @switch($type)
+                            @switch($value)
                                 @case(0)
                                     <td class="status_logistica"> Ingresado</td>
                                     @break
@@ -198,7 +261,15 @@
                 <th class="date_first_visit">fec. 1ra visit</th>
                 <th class="date_delivered">fec. entreg.</th>
                 <th class="date_not_delivered">fec. no entr.</th>
-                <th class="cadete">cadete</th>
+                <th class="cadete1">cadete-1</th>
+                <th style="display: none;">admin_cad1</th>
+                <th style="display: none;">fec. asig1</th>
+                <th style="display: none;">cadete-2</th>
+                <th style="display: none;">admin_cad2</th>
+                <th style="display: none;">fec. asig2</th>
+                <th style="display: none;">cadete-3</th>
+                <th style="display: none;">admin_cad3</th>
+                <th style="display: none;">fec. asig3</th>
                 <th class="status_logistica">Status logis.</th>
                 <th class="comment_logis">coment. logist.</th>
                 <th style="display: none;">sticker</th>

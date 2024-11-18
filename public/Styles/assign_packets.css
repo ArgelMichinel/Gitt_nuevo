@@ -35,7 +35,7 @@ main h2 {
   align-content: center;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/asignacion.jpeg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/../images/asignacion.jpeg");
   background-position:50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -158,4 +158,33 @@ video {
 .btn:hover, .btn2:hover {opacity: 1}
     
 #audio {display: none}
-   
+
+.boton_tienda {
+  width: 120px;
+  margin: 15px;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #8bdc00;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px  #7ac70c;
+}
+
+.boton_tienda_1 {
+  width: 120px;
+  margin: 15px;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #98059d;
+  background-color: #8bdc00;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px  #7ac70c;
+  box-shadow: none;
+  transform: translateY(5px);
+}
