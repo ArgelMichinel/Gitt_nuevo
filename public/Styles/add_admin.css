@@ -6,7 +6,7 @@
 .formu {
   text-align: center; 
   align-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/william-iven-gcsNOsPEXfs-unsplash.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/../images/william-iven-gcsNOsPEXfs-unsplash.jpg");
   background-position:50% 50%;
   background-repeat: no-repeat;
   background-size: cover;

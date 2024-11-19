@@ -18,6 +18,6 @@ function constr_list() {
 }
 ////////////////////////////////
 function agregar() {
-    window.location.href = "add_admin.php";
+    window.location.href = "add_admin";
 }
 

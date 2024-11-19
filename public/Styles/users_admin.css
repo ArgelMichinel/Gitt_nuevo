@@ -1,5 +1,3 @@
-<style>
-
 .table_container {
     display: block;
     height: auto;
@@ -46,7 +44,7 @@ div.dataTables_wrapper {
 .data_container {
   text-align: center; 
   align-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/andrew-neel-cckf4TsHAuw-unsplash.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/../images/andrew-neel-cckf4TsHAuw-unsplash.jpg");
   background-position:50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -124,5 +122,3 @@ div.dataTables_wrapper {
     width: 100%;
   }
 }
-    
-</style>

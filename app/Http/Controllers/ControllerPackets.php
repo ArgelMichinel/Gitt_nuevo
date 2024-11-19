@@ -70,8 +70,7 @@ class ControllerPackets extends Controller
             'data' => $data,
         ]);
         
-        //return view('Lista_creada',compact('title', 'lista_name')); // Esta vista no se usa. Es sólo un requisito porque los controladores siempre necesitan una vista
-    }
+            }
 
 
 }

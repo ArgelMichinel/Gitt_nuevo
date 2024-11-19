@@ -87,7 +87,7 @@ div.dataTables_wrapper {
 .formu {
   text-align: center; 
   align-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/andrew-neel-cckf4TsHAuw-unsplash.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/../images/andrew-neel-cckf4TsHAuw-unsplash.jpg");
   background-position:50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -116,7 +116,7 @@ div.dataTables_wrapper {
   align-content: center;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://www.gittgetittoday.com/images/chuttersnap-BNBA1h-NgdY-unsplash.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/../images/chuttersnap-BNBA1h-NgdY-unsplash.jpg");
   background-position:50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
