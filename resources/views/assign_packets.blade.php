@@ -41,6 +41,7 @@
             <div><p>Asignación por lista</p></div>
             
                 <form action="" method="post">
+                    @csrf
                 
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -103,6 +104,7 @@
                     </div>
                     <!********************************************************>
                     <audio id="audio_scan" src="/../include_QR/bip-scanner.mpeg"></audio>
+                    <audio id="trompeta" src="/../include_QR/trompeta.mp3"></audio>
 
                 </div>
             </div>
@@ -113,9 +115,9 @@
 
                     <!********************************************************>
                     <div id="myDIV" class="header_2">
-                        
+                        {{-- 
                         <button  type="button" class="boton_tienda_1" id="Tienda_ML" onclick="cambiar_tienda()">MERCADO LIBRE</button>
-                        <button  type="button" class="boton_tienda" id="Tienda_TN" onclick="cambiar_tienda()">TIENDA<br>NUBE</button>
+                        <button  type="button" class="boton_tienda" id="Tienda_TN" onclick="cambiar_tienda()">TIENDA<br>NUBE</button> --}}
 
                         <h1 style="margin:5px">Envíos para asignar</h1>
                         <label for="select_list[cadete]">Selecciona un cadete:</label>

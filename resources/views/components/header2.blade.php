@@ -32,7 +32,7 @@
             <a class="underH" href="javascript:void(0)" onclick="menuclientes()">Clientes</a>
             <a class="underH" href="javascript:void(0)" onclick="menucadetes()">Cadetes</a>
             <a class="underH" href="javascript:void(0)" onclick="menuadminist()">Adm. Usuarios</a>
-            <a class="underH" href="logout.php">Logout</a>
+            <a class="underH" href="{{ route('logout')}}">Logout</a>
 
             <a href="javascript:void(0);" class="icon" onclick="FunctionTopnav()">
             <i id="i-menu" class="fa fa-bars"></i>

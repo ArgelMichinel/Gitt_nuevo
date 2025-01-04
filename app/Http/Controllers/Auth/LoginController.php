@@ -93,15 +93,14 @@ class LoginController extends Controller
         switch ($perfil) {
             case 'administ':
                 /* dd($perfil . " bandera 1"); */
-                /* return redirect()->route('mostrarenvios'); */
-                return redirect()->route('desk_admin');
-                /* dd($perfil . " bandera 2"); */
+                /* return redirect()->route('desk_admin'); */
+                return redirect()->route('mostrarenvios');
                 break;
             case 'cadete':
                 return redirect()->route('desk_cadete');
                 break;
             case 'clientes':
-                return redirect()->route('desk_client');
+                return redirect()->route('mostrarenvios_cientes');
                 break;
         }
     }

@@ -22,8 +22,10 @@ var ind = 0;
 var mat_ship = [];
 var delet = [];
 var num_pack = 0;
-var Tipo_tienda = "ML";
+/* var Tipo_tienda = "ML"; */
+var Tipo_tienda = "";
 var cadete_valido = false;
+var audiomalo = document.getElementById("trompeta");
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("num_pack").innerHTML = num_pack;
 });
@@ -99,9 +101,8 @@ function prepare_QRdata(content) {
       }
     }
 
-    if (repeti == false) {
-      print_page(shipnum);
-    }
+    check_ingresado (shipnum);
+
 }
 
 function prepare_data_man() {
@@ -117,14 +118,15 @@ function prepare_data_man() {
   }
 
   if (repeti == false) {
-    print_page(shipnum);
+    
+    check_ingresado (shipnum);
   }
 }
 
 //////////////////////////
 function pulsar() {
   for (i = 0; i < document.getElementById("Cadetexy").children.length; i++) {
-    if (document.getElementById("cadete_dummy").value == document.getElementById("Cadetexy").children[i].value) {
+    if (document.getElementById("input_dummy").value == document.getElementById("Cadetexy").children[i].value) {
       cadete_valido = true;
     }
   }
@@ -209,4 +211,40 @@ function sumar_conta() {
 function restar_conta() {
   num_pack -= 1;
   document.getElementById("num_pack").innerHTML = num_pack;
+}
+
+///////////////////////////////////////////
+
+function check_ingresado(shipnum) {
+
+  //let direcc = "./check_ingresado?id_ship=" + shipnum;  
+  let direcc = "./check_ingresado?id_ship=" + shipnum;  //La ruta de arriba es la de producción
+  console.log(direcc);
+  let audiomalo = document.getElementById("trompeta");
+
+  fetch(direcc, {
+      method: 'GET',
+      headers: {
+          'Accept': 'application/json'
+      }
+  })
+  .then(response => {
+      if (!response.ok) { // Verifica si el estado HTTP no es 2xx
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json(); // Si es exitoso, procesa el JSON
+  })
+  .then(data => {
+    console.log(data)
+    
+    if (typeof data.date_in !== 'undefined') {
+      print_page(shipnum);
+      ingresado =true;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    audiomalo.play();
+  });
+
 }

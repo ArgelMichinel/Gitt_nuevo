@@ -91,39 +91,31 @@
                         @if ($key === 'sender_id')          {{-- Selección de la tabla donde se buscará el cliente sender del paquete --}}
                             <td style="display: none;"> {{ $value }}</td>
 
-                            @if (substr($pack['id_ship'],0,2) === "ML")   {{-- Si el envío es de MELI --}}
+                            
+                            @if (substr($pack['id_ship'],0,2) === "GT")   {{-- Si el envío es de Gitt --}}
+
+                                @foreach ($clients as $cl => $variab)
+                                    @if ($variab['id'] === $value)
+                                        <td> {{ $variab['name'] }}</td>
+                                        @break
+                                    @endif
+                                @endforeach
+                                
+                            @else 
     
                                 @foreach ($clients as $cl => $variab)
                                     @if ($variab['id_MELI'] === $value)
                                         <td> {{ $variab['name'] }}</td>
                                         @break
                                     @endif
-                                @endforeach
-
-                            @elseif (substr($pack['id_ship'],0,2) === "TN")   {{-- Si el envío es de Tienda nube --}}
-
-                                @foreach ($clients as $cl => $variab)
                                     @if ($variab['id_TN'] === $value)
-                                        <td> {{ $variab['Nombre'] }}</td>
+                                        <td> {{ $variab['name'] }}</td>
                                         @break
                                     @endif
                                 @endforeach
-
-                            @elseif (substr($pack['id_ship'],0,2) === "GT")   {{-- Si el envío es de Gitt --}}
-
-                                @foreach ($clients as $cl => $variab)
-                                    @if ($variab['id'] === $value)
-                                        <td> {{ $variab['Nombre'] }}</td>
-                                        @break
-                                    @endif
-                                @endforeach
-
-                            @else {{-- Opción si no se consiguió las siglas del envío (error) --}}
-
-                                <td> {{ $value }}</td>
 
                             @endif
-                            
+
                         @endif
 
                         @if ($key === 'sticker')

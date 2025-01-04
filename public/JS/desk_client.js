@@ -1,5 +1,5 @@
 
-function query_packets() {
+/* function query_packets() {
     let activar = document.getElementById('screem-packets');
     let desactivar = document.getElementById('principal');
 
@@ -45,4 +45,4 @@ document.addEventListener('DOMContentLoaded',function(){
         document.getElementById('screem-packets').style.display = "block";
         document.getElementById('presentacion').style.background = "none";
     }
-});
+}); */

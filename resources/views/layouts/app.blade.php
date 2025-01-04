@@ -35,9 +35,9 @@
 
 <body>
 
-{{--     @guest
-        <x-header1></x-header1>
-    @endguest --}}
+    @auth('clientes')
+        <x-header3 :title="$title"></x-header3>
+    @endauth
 
     @auth('administ')
         <x-header2></x-header2>
@@ -56,8 +56,5 @@
 </body>
 <script type="text/javascript" src="{{ asset('JS/H-Script.js') }}"></script>
 @yield('inc_script_end')
-<script>
-    
-    
-</script>
+
 </html>

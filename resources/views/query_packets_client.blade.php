@@ -1,10 +1,9 @@
 @extends('layouts.app')
 
 @section('inc_head')
-    <link rel="stylesheet" href="{{ asset('Styles/access.css') }}">
     <link rel="stylesheet" href="{{ asset('Styles/jquery.dataTables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('Styles/buttons.dataTables.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('Styles/query_packets.css') }}">
+    <link rel="stylesheet" href="{{ asset('Styles/desk_client.css') }}">
     <script type="text/javascript" language="javascript" src="{{ asset('JS/jquery-3.5.1.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/jquery.dataTables.min.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/dataTables.buttons.min.js') }}"></script>
@@ -12,7 +11,7 @@
     <script type="text/javascript" language="javascript" src="{{ asset('JS/vfs_fonts.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.html5.min.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.print.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="{{ asset('JS/query_packets.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/query_packets_client.js') }}"></script>
     <script type="text/javascript" class="init">
         $(document).ready(function() {
             var table = $('#example').DataTable( {
@@ -41,29 +40,25 @@
 @section('output')
 
     <div class="table_container" style="padding-bottom: 40px;">
-        <x-filtros :clients="$clients" :cadetes="$cadetes"></x-filtros>
+        <x-filtros_clientes></x-filtros_clientes>
         
-        <x-select_columna></x-select_columna>
-        
-        <x-tabla_query :packets="$packets" :clients="$clients" :cadetes="$cadetes" :admin="$admin"></x-tabla_query>
+        <x-tabla_query_clientes :packets="$packets"></x-tabla_query_clientes>
         
     </div>
     
-    <h2>Crear Lista</h2>
-    
-    <div class="list_container">
+    <div id="id01" class="modal">
+        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <div class="modal-content">
+            <div class="container">
+                <h1>Mensaje</h1>
         
-        <div style="align-self: center;"><label for="selection_check">Seleccionar todos los registros:</label><input type="checkbox" class="Checkbox" onclick="select_all()" name="selection_check" id="selection_check" value="true"></div>
+                <p>Para visualizar los envíos asignados a la compañía primero debe seleccionar un periodo o una localidad que desee consultar.</p>
         
-        <form action="" method="post">
-            @csrf
-            <label for="new_list[name]">Nombre de la lista:</label>
-            <input type="text" id="name_list" name="new_list[name]" placeholder="Nombre de la lista" required>
-            <input type="text" id="values_list" name="new_list[values]" style="display: none;">
-            <button type="submit" id="submit_list" style="display: none;">Crear Lista</button>
-        </form>
-        <button class="btn" onclick="constr_list()">Crear Lista</button>
-        
+                <div class="clearfix">
+                    <button type="button" class="btn3 cancelbtn" onclick="document.getElementById('id01').style.display='none'" style="background-color: #484242;">Aceptar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection

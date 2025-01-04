@@ -32,11 +32,11 @@ class MELIService
         return $result;
     }
     
-    ////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////// modificada
     
-    public function info_user($pdo,$id_client) {
+    public function info_user($id_client) {
         
-        $client = $this ->checkValdTok($pdo,$id_client);
+        $client = $this ->checkValdTok($id_client);
         
         $cliente = curl_init();
         curl_setopt($cliente, CURLOPT_URL, 'https://api.mercadolibre.com/users/'.$id_client);
@@ -137,7 +137,7 @@ class MELIService
     
     public function update($table, $primaryKey, $fields) {
     
-        $seleccionado = DB::table($table)->where($primaryKey, $fields[$primaryKey])->get(); 
+        $seleccionado = DB::table($table)->where($primaryKey, '=', $fields[$primaryKey])->get(); 
         $seleccionado = $fields;
         $seleccionado -> save();
     }
@@ -153,10 +153,10 @@ class MELIService
     
     /////////////////////////////////////////////////////// modificada
     
-    public function checkValdTok($pdo,$id_client) {
+    public function checkValdTok($id_client) {
         $timeNow =  Carbon::now();
         
-        $dat_user = $this-> ask_client($pdo,$id_client);
+        $dat_user = $this-> ask_client($id_client);
         $time_access = Carbon::parse($dat_user['fec_hora']);
         
         $interva = $time_access -> diff($timeNow);
@@ -210,9 +210,6 @@ class MELIService
         $datos = [];
         $envios = DB::table('envios');
             
-        if (isset($parameters['incl_client'])) {
-                $envios -> where('sender_id', $parameters['client']);
-        }
         if (isset($parameters['incl_cadete'])) {
                 if ($parameters['cadete'] == 'none') {
                     $envios -> where('cadete', null);
@@ -285,8 +282,30 @@ class MELIService
             $envios -> where('delivery_preference', 1);
                 
         }
+        if (isset($parameters['incl_client'])) {
+                $envios2 = clone $envios;
+                $id_MELI = clientes::where('id','=',$parameters['client'])->first()->id_MELI;
+                $id_TN = clientes::where('id','=',$parameters['client'])->first()->id_TN;
+                if ($id_MELI) {
+                    $envios -> where('sender_id', '=', $id_MELI);
+                    //dd('Paso por envios MELI '. $id_MELI. ' ' . $id_TN);
+                } else {
+                    $envios -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con MELI
+                }
+                
+                if ($id_TN) {
+                    $envios2 -> where('sender_id', '=', $id_TN);
+                    //dd('Paso por envios TN');
+                } else {
+                    $envios2 -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con TN
+                }
+
+        }
         
-        $result = $envios->get();
+        $result1 = $envios->get();
+        $result2 = $envios2->get();
+        
+        $result = $result1 -> merge($result2);
 
         $result = json_decode(json_encode($result), true);
         
@@ -300,9 +319,33 @@ class MELIService
         $n_data = count($fields);
         for ($i = 0; $i < $n_data; $i++) {
             
-            $colum = $fields[$i];
+            $fila = $fields[$i];
             /////////////////////////////////////////////////
-            $this -> update($table, $primaryKey, $colum);
+            $this -> update($table, $primaryKey, $fila);
+            
+        }  
+        
+    }
+
+    /////////////////////////////////////////////////////// modificada
+
+    public function assign_packets ($fields) {
+    
+        $n_data = count($fields);
+        for ($i = 0; $i < $n_data; $i++) {
+            
+            $selec = envios::where('id_ship','=',$fields[$i]['id_ship']);
+            $selec-> cadete3 = $selec-> cadete2;
+            $selec-> time_cad3 = $selec-> time_cad2;
+            $selec-> admin_cad3 = $selec-> admin_cad2;
+            $selec-> cadete2 = $selec-> cadete1;
+            $selec-> time_cad2 = $selec-> time_cad1;
+            $selec-> admin_cad2 = $selec-> admin_cad1;
+            $selec-> cadete1 = $fields[$i]['cadete1'];
+            $selec-> time_cad1 = now();
+            $selec-> admin_cad1 = $fields[$i]['admin_cad1'];
+            /////////////////////////////////////////////////
+            $selec -> save();
             
         }  
         
@@ -410,5 +453,14 @@ class MELIService
         //////////////////////////////////////
         
         return $ship_mat;
+    }
+
+    
+    //////////////////////////////////////////////////////////
+
+    function findSeveral($table,$primaryKey,$id) {
+
+        return DB::table($table)->where($primaryKey, '=', $id)->get()->toArray();
+        
     }
 }

@@ -70,7 +70,13 @@ class ControllerPackets extends Controller
             'data' => $data,
         ]);
         
-            }
+    }
 
+    public function include_packets ()
+    {
+        $title='Ingresar Paquetes';
+
+        return view('include_packets', compact('title'));
+    }
 
 }
