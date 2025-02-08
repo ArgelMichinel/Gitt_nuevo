@@ -46,7 +46,7 @@ function request_data(sender_id, shipnum, content) {
         
         if (Ajax.readyState==4 && Ajax.status==200) {
           
-          console.log(decodeURIComponent( Ajax.responseText));
+          //console.log(decodeURIComponent( Ajax.responseText));
           mat_ship = JSON.parse( decodeURIComponent( Ajax.responseText) );
           submit_array();
         }
@@ -116,7 +116,7 @@ function submit_array() {
     Ajax.onreadystatechange = function() {
         
         if (Ajax.readyState==4 && Ajax.status==200) {
-
+          //console.log(Ajax.responseText);
             if (Ajax.responseText == "Exito" ) {
                 audio.play();
                 print_page(mat_ship);
@@ -130,8 +130,15 @@ function submit_array() {
 
     let packete = JSON.stringify(  mat_ship );
     //console.log(packete);
-    Ajax.open("POST","./save_packets",true);
+    //Ajax.open("POST","./prueba",true);
+    Ajax.open("POST","./save_packet",true);
     Ajax.setRequestHeader("Content-Type","application/json");
+
+    // Obtener el token CSRF desde la metaetiqueta del documento HTML
+    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // Agregar el token CSRF en los encabezados
+    Ajax.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+    
     Ajax.send( packete );
 
 }

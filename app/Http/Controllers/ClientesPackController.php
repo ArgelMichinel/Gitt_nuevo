@@ -35,8 +35,8 @@ class ClientesPackController extends Controller
             $packets = $this->MELIService->query_customized($new_query);
         } else {
             $new_query['incl_date'] = True;
-            $fecha2 = Carbon::now();
-            $fecha = Carbon::now();
+            $fecha2 = new \DateTime();
+            $fecha = new \DateTime();
             $fecha = $fecha->modify('-1 day');
             $fecha2 = $fecha2->modify('+1 day');
             $new_query['begin_date'] = $fecha->format('Y-m-d');

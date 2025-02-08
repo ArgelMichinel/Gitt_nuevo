@@ -17,14 +17,25 @@ class LoginController extends Controller
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
         $perfil = $this->perfil($request);
         
-        //Si el usuario está autentificado 
-        if (Auth::guard($perfil)->check()) {
-            
-            return $this->redirect_authenticated($perfil);
-
+        //Si el usuario está autentificado lo redirige a su escritorio
+        foreach (config('auth.guards') as $guard => $provider) {
+            if (Auth::guard($guard)->check()) {
+                 //dd('El usuario está autenticado con el guard'. $guard);
+                 return $this->redirect_authenticated($guard);
+                break;
+            }
         }
+        
 
-        return view('auth.login');
+        switch ($perfil) {
+            case 'administ':
+                return view('auth.login_admin');
+            case 'cadete':
+                return view('auth.login_cadete');
+                break;
+            case 'clientes':
+                return view('auth.login');
+        }
 
     }
 
@@ -87,10 +98,10 @@ class LoginController extends Controller
         }
     }
 
-    protected function redirect_authenticated($perfil)
+    protected function redirect_authenticated($guard)
     {
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
-        switch ($perfil) {
+        switch ($guard) {
             case 'administ':
                 /* dd($perfil . " bandera 1"); */
                 /* return redirect()->route('desk_admin'); */

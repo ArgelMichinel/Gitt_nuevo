@@ -34,12 +34,13 @@ class IntegracionController extends Controller
         if ($code) {
             $state = request()->input('state');
             $datos = $this -> MELIService -> request_tok($code,$state,env('APP_ID'),env('SECRET_KEY'),env('URL'));
+            //dd($datos);
 
             $registro = access_meli::where('user_id','=',$datos["user_id"])->get();
             
             $title='Registro de usuario';
 
-            return view('curl',compact($registro,$title));
+            return view('curl',compact('registro','title','datos'));
 
         } else {
 
@@ -57,7 +58,6 @@ class IntegracionController extends Controller
 
         $new_user = request()->input('new_user');
         $num_errores = 0;
-        $Nombre_meli = $this -> MELIService -> info_user($new_user['user_id']);
 
         if (empty($new_user['email'])) {
             $num_errores += 1;
@@ -83,14 +83,14 @@ class IntegracionController extends Controller
 
             $new_user['password'] = password_hash($new_user['password'], PASSWORD_DEFAULT);
 
-            $usuario = new clientes([
-                'name' => $new_user["nombre"],
-                'email' => $new_user["email"],
-                'password' => $new_user["password"],
-                'remember_token' => Str::random(60),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ]);
+            $usuario = new clientes();
+            $usuario->name = $new_user["nombre"];
+            $usuario->email = $new_user["email"];
+            $usuario->password = $new_user["password"];
+            $usuario->remember_token = Str::random(60);
+            $usuario->created_at = new \DateTime();
+            $usuario->updated_at = new \DateTime();
+            $usuario->id_MELI = $new_user["user_id"];
 
             $usuario->save();
 
@@ -104,18 +104,23 @@ class IntegracionController extends Controller
                 $title='Actualización de usuario';
             }
 
-            $usuario_meli = new access_meli([
-                'id' => $usuario->id,
-                'user_id' => $new_user["user_id"],
-                'access_tok' => $new_user["access_tok"],
-                'refresh_tok' => $new_user["refresh_tok"],
-                'fec_hora' => Carbon::now(),
-                'Nombre' => $Nombre_meli
-            ]);
+            $Nombre_meli = $new_user["nombre"]; 
+
+            $usuario_meli = new access_meli();
+            $usuario_meli-> id = $usuario["id"];
+            $usuario_meli-> user_id = $new_user["user_id"];
+            $usuario_meli-> access_tok = $new_user["access_tok"];
+            $usuario_meli-> refresh_tok = $new_user["refresh_tok"];
+            $usuario_meli-> fec_hora = Carbon::now();
+            $usuario_meli-> Nombre = $Nombre_meli;
 
             $usuario_meli->save();
 
-            return view('integracion_success',compact($title,$errores,$mensaje));
+            if (isset($errores)) {
+                return view('integracion_success',compact('title','errores','mensaje','num_errores'));
+            }
+
+            return view('integracion_success',compact('title','mensaje','num_errores'));
             
         } else {
             //header('location: https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id='.$APP_ID.'&state='.$randSecu.'&redirect_uri='.$URL);

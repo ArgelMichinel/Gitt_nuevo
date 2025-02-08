@@ -116,7 +116,7 @@ function submit_array() {
     Ajax.onreadystatechange = function() {
         
         if (Ajax.readyState==4 && Ajax.status==200) {
-
+          console.log(Ajax.responseText);
             if (Ajax.responseText == "Exito" ) {
                 audio.play();
                 print_page(mat_ship);
@@ -129,9 +129,15 @@ function submit_array() {
     }
 
     let packete = JSON.stringify(  mat_ship );
-    //console.log(packete);
-    Ajax.open("POST","./save_packets",true);
+    console.log(packete);
+    Ajax.open("POST","./prueba",true);
     Ajax.setRequestHeader("Content-Type","application/json");
+
+    // Obtener el token CSRF desde la metaetiqueta del documento HTML
+    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // Agregar el token CSRF en los encabezados
+    Ajax.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+    
     Ajax.send( packete );
 
 }

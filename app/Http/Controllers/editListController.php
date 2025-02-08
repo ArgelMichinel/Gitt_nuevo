@@ -6,7 +6,7 @@ use App\Models\listas;
 use App\Models\listasenvios;
 use Illuminate\Http\Request;
 
-class editCadeteController extends Controller
+class editListController extends Controller
 {
     public function mostrar() {
         $title='Eliminar lista';

@@ -19,8 +19,8 @@ class editClienteController extends Controller
     public function delet_client() {
         $del_client = request()->input('del_client');
         
-        $cliente_eliminado = clientes::where('id','=',$del_client);
-        $cliente_MELI = access_meli::where('user_id','=',$cliente_eliminado);
+        $cliente_eliminado = clientes::where('id','=',$del_client)->first();
+        $cliente_MELI = access_meli::where('user_id','=',$cliente_eliminado)->first();
         $cliente_MELI->delete();
         //$cliente_NUBE = access_nube::where('user_id','=',$cliente_eliminado);
         //$cliente_NUBE->delete();

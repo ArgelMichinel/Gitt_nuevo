@@ -8,7 +8,7 @@
 <div class="extern">
   
     <h2>Bienvenido</h2>
-    <div id="expandible" class="topnav-responsive">
+    <div id="expandible">
           <div id="cambio_acc"><a class="underH" href="{{ route('login_admin') }}">Acc. Clientes</a></div>
     </div>
   
@@ -24,6 +24,7 @@
         <input type="password" placeholder="Introduzca su contraseña" name="password" id="password" required>
 
         <button type="submit" class="btn">Ingresar</button>
+        <a href="{{ route('integracion') }}">Registrarse como cliente</a>
       </form>
 
       <!-- Error Alert -->

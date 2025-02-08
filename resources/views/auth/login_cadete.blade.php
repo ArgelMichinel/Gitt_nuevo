@@ -10,7 +10,7 @@
   
   
     <h2>Bienvenido</h2>
-    <div id="expandible" class="topnav-responsive">
+    <div id="expandible">
       <div id="cambio_acc"><a class="underH" href="{{ route('login') }}">>Acc. Cadete</a></div>
     </div>
   

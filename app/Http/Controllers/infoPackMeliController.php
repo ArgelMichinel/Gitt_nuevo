@@ -20,7 +20,7 @@ class infoPackMeliController extends Controller
         $dat_query = request() -> input();
 
         if (isset($dat_query['shipnum'])) {
-            dd('Está entrando');
+            //dd('Está entrando');
             $sender_id = (int) $dat_query['sender_id'];
             $clientes = clientes::all();
             $shipnum = (int)$dat_query['shipnum'];
@@ -33,10 +33,15 @@ class infoPackMeliController extends Controller
 
             ///////Acá se evalúa si el envío es de MELI o TN
             for ($i=0; $i < count($clientes); $i++) { 
+
+                //if ($i == 2) dd('Tabla cliente ' . $clientes[$i]->id_MELI . ' SenderID ' . $sender_id );
                 
                 if ($sender_id == $clientes[$i]->id_MELI) {  //Metodos que se aplican si el envío es MELI
                     $sender_id = (int) $sender_id;
-                    $client_info = $this -> MELIService -> checkValdTok($sender_id);
+                    $APP_ID = env('APP_ID');
+                    $SECRET_KEY = env('SECRET_KEY');
+                    $client_info = $this -> MELIService -> checkValdTok($sender_id,$APP_ID,$SECRET_KEY);
+                    //dd($client_info);
                     $ACCESS_TOK = $client_info['access_tok'];
                     $ship_mat = $this -> MELIService -> print_answer ($shipnum, $ACCESS_TOK, $sender_id ,$sticker);
                     break;
@@ -52,8 +57,11 @@ class infoPackMeliController extends Controller
             }
 
             $ship_mat = rawurlencode( json_encode($ship_mat));
+            //dd($ship_mat);
 
-            return print ($ship_mat);
+            print_r($ship_mat);
+            return;
+            
         } else {
             $title='Consultar paquetes sin registrar';
             $clientes = clientes::all();
@@ -62,7 +70,7 @@ class infoPackMeliController extends Controller
         }
     }
 
-    public function info_Meli_post() 
+    public function info_packets_post() 
     {
         $sender_id = request()->input('sender_id');
         $clientes = clientes::all();
@@ -73,7 +81,9 @@ class infoPackMeliController extends Controller
             
             if ($sender_id == $clientes[$i]->id_MELI) {  //Metodos que se aplican si el envío es MELI
                 $sender_id = (int) $sender_id;
-                $client_info = $this -> MELIService -> checkValdTok($sender_id);
+                $APP_ID = env('APP_ID');
+                $SECRET_KEY = env('SECRET_KEY');
+                $client_info = $this -> MELIService -> checkValdTok($sender_id,$APP_ID,$SECRET_KEY);
                 $ACCESS_TOK = $client_info['access_tok'];
                 $ship_mat = $this -> MELIService -> print_answer ($shipnum, $ACCESS_TOK, $sender_id ,$sticker);
                 break;
@@ -88,6 +98,7 @@ class infoPackMeliController extends Controller
 
         }
 
+        //Arreglar esto. Faltan parámetros
 
         $packets = [];
         $packets['id_ship'] = $ship_mat[0][0];

@@ -39,3 +39,21 @@
             </a>
     </div>
 </div>
+
+<div class="espacio"></div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeSiNav()">×</a>
+    <a href="{{ route('incluirEnvio') }}">Ingresar envíos</a>
+    <a href="{{ route('asignar') }}">Egresar envíos</a>
+    <a href="{{ route('mostrarenvios') }}">Envios registrados / Crear lista</a>
+    <a href="{{ route('mostrarListas') }}">Manejar lista</a>
+    <a href="update_packets.php">Actualizar envíos</a>
+    <a href="{{ route('info_packets') }}">Consultar envíos sin registrar</a>
+    <a href="{{ route('infoCliente') }}">Info de cliente</a>
+    <a href="{{ route('registrarCadete') }}">Agregar Cadete</a>
+    <a href="{{ route('mostrarCadete') }}">Listar Cadetes</a>
+    <a href="{{ route('editarCadete') }}">Editar Cadete</a>
+    <a href="{{ route('mostrarAdmin') }}">Usuarios administradores</a>
+    <a href="{{ route('infoCliente') }}">Usuarios clientes</a>
+</div>   

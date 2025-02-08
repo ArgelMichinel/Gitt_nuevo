@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class MELIService
 {
+
     public function getLatestPackets($limit = 300)
     {
         return Envios::orderBy('date_in', 'desc')->take($limit)->get()->toArray();
@@ -34,15 +35,16 @@ class MELIService
     
     //////////////////////////////////////////////////////////// modificada
     
-    public function info_user($id_client) {
+    public function info_user($id_client,$APP_ID,$SECRET_KEY) {
         
-        $client = $this ->checkValdTok($id_client);
+        $client = $this ->checkValdTok($id_client,$APP_ID,$SECRET_KEY);
         
         $cliente = curl_init();
+        $ACCESS_TOK = $client['access_tok'];
         curl_setopt($cliente, CURLOPT_URL, 'https://api.mercadolibre.com/users/'.$id_client);
         curl_setopt($cliente, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($cliente, CURLOPT_HEADER, false);
-        curl_setopt($cliente, CURLOPT_HTTPHEADER, array('Authorization: Bearer '.$client['access_tok']));
+        curl_setopt($cliente, CURLOPT_HTTPHEADER, array('Authorization: Bearer '. $ACCESS_TOK));
         curl_setopt($cliente, CURLOPT_RETURNTRANSFER, true);
     
         $result = curl_exec($cliente);
@@ -151,33 +153,35 @@ class MELIService
         return $dat_user;
     }
     
-    /////////////////////////////////////////////////////// modificada
+    /////////////////////////////////////////////////////// modificada Sirve solo para MELI
     
-    public function checkValdTok($id_client) {
-        $timeNow =  Carbon::now();
+    public function checkValdTok($id_client,$APP_ID,$SECRET_KEY) {
+        $timeNow =  new \DateTime();
         
-        $dat_user = $this-> ask_client($id_client);
-        $time_access = Carbon::parse($dat_user['fec_hora']);
+        $dat_user = access_meli::where('user_id','=',$id_client)->first();
+        $time_access = new \DateTime($dat_user['fec_hora']);
         
         $interva = $time_access -> diff($timeNow);
         $interva = $this-> Diff_On_Sec ($interva);
+        //dd($interva);
         
         if ($interva > 648000) {
                 $message = 'Usuario con credenciales expiradas';
+                dd($message);
         } elseif (($interva > 21600) and ($interva < 648000)) {
-                include 'Datosprogram.php';
                 $datos = $this-> refresh_tok($APP_ID,$SECRET_KEY,$dat_user['refresh_tok']);
-                $datos -> fec_hora = Carbon::now();
-                $access_meli_selecc = access_meli::where('user_id', $id_client)->get();
+                //dd($datos);
                 
-                foreach ($datos as $key => $value) {
-                    $access_meli_selecc [$key] = $value;
-                }
-                $access_meli_selecc ->save();
+                $dat_user ['fec_hora'] = new \DateTime();
+                $dat_user ['access_tok'] = $datos['access_token'];
+                $dat_user ['refresh_tok'] = $datos['refresh_token'];
+                //dd($access_meli_selecc);
+                $dat_user ->save();
+
+                
         } 
         
-        return $access_meli_selecc;
-        
+        return $dat_user;
     }
     
     ///////////////////////////////////////////////////////
@@ -193,11 +197,15 @@ class MELIService
     return $interva;
         }
     
-    ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////// modificada
     
-    public function insert_by_lots ($table, $fields) {
-       
-        DB::table($table)->insert($fields); 
+    public function insert_by_lots ($fields) {
+        
+        $n_pack = count($fields);
+
+        for ($i=0; $i < $n_pack; $i++) { 
+            $this->insert_pack($fields[$i]);
+        }
         
     }
     
@@ -283,29 +291,32 @@ class MELIService
                 
         }
         if (isset($parameters['incl_client'])) {
-                $envios2 = clone $envios;
-                $id_MELI = clientes::where('id','=',$parameters['client'])->first()->id_MELI;
-                $id_TN = clientes::where('id','=',$parameters['client'])->first()->id_TN;
-                if ($id_MELI) {
-                    $envios -> where('sender_id', '=', $id_MELI);
-                    //dd('Paso por envios MELI '. $id_MELI. ' ' . $id_TN);
-                } else {
-                    $envios -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con MELI
-                }
-                
-                if ($id_TN) {
-                    $envios2 -> where('sender_id', '=', $id_TN);
-                    //dd('Paso por envios TN');
-                } else {
-                    $envios2 -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con TN
-                }
+            $envios2 = clone $envios;
+            $id_MELI = clientes::where('id','=',$parameters['client'])->first()->id_MELI;
+            $id_TN = clientes::where('id','=',$parameters['client'])->first()->id_TN;
+            if ($id_MELI) {
+                $envios -> where('sender_id', '=', $id_MELI);
+                //dd('Paso por envios MELI '. $id_MELI. ' ' . $id_TN);
+            } else {
+                $envios -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con MELI
+            }
+            
+            if ($id_TN) {
+                $envios2 -> where('sender_id', '=', $id_TN);
+                //dd('Paso por envios TN');
+            } else {
+                $envios2 -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con TN
+            }
 
+            $result1 = $envios->get();
+            $result2 = $envios2->get();
+            
+            $result = $result1 -> merge($result2);
+
+        } else {
+            $result = $envios->get();
         }
         
-        $result1 = $envios->get();
-        $result2 = $envios2->get();
-        
-        $result = $result1 -> merge($result2);
 
         $result = json_decode(json_encode($result), true);
         
@@ -370,7 +381,7 @@ class MELIService
         
         $shipping = [];
         $shipping[0] = $shipnum;                   //'id_ship'
-        $shipping[1] = Carbon::now();             //'date_in'
+        $shipping[1] = new \DateTime();             //'date_in'
         $shipping[2] = $shipping_res['status'];     //'status'
         $shipping[3] = $sender_id;                  //'sender_id'
         $shipping[4] = $shipping_res['order_id'];        //'order_id'
@@ -405,7 +416,7 @@ class MELIService
         $ship_mat = [$shipping, $address, $receiver_per, $shipping_items, $delivery];
         
         //////////////////////////////////////
-        
+        //dd($ship_mat);
         return $ship_mat;
     }
     
@@ -418,7 +429,7 @@ class MELIService
         
         $shipping = [];
         $shipping[0] = $shipnum;                   //'id_ship'
-        $shipping[1] = Carbon::now();             //'date_in'
+        $shipping[1] = new \DateTime();            //'date_in'
         $shipping[2] = $shipping_res['status'];     //'status'
         $shipping[3] = $sender_id;                  //'sender_id'
         $shipping[4] = $shipping_res['order_id'];        //'order_id'
@@ -462,5 +473,17 @@ class MELIService
 
         return DB::table($table)->where($primaryKey, '=', $id)->get()->toArray();
         
+    }
+
+    ///////////////////////////////////////////////////////////
+
+    public function insert_pack ($field) {
+        $envio = new envios();
+
+        foreach ($field as $key => $value) {
+            $envio->$key = $value;
+        }
+
+        $envio->save();
     }
 }

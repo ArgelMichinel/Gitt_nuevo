@@ -79,4 +79,44 @@ class ControllerPackets extends Controller
         return view('include_packets', compact('title'));
     }
 
+    public function mostrarUpdate() {
+        
+        $get_param = request()->input('new_query');
+        $title='Consulta de paquetes';
+
+        if (isset($get_param)) {
+            $packets = $this->MELIService->query_customized($get_param);
+        } else {
+            $packets = $this->MELIService->getLatestPackets();
+        }
+
+        //dd($packets);
+        
+        $clients = clientes::all()->toArray();
+        $cadetes = cadetes::all()->toArray();
+        $admin = administ::all()->toArray();
+        
+        return view('update_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+    }
+
+    public function post_update() {
+        $cambios = request()->input('new_list');
+        $valores = request()->input('values');
+
+        $list_values = json_decode($valores,true);
+        
+        $parameters = [];
+        
+        for ($i=0; $i < count($list_values); $i++) {
+            $parameters[$i] = $cambios;
+            $parameters[$i]['id_ship'] = $list_values[$i];
+        }
+        
+        $this->MELIService->update_by_lots('envios', 'id_ship', $parameters);
+        
+        $title='Envíos Actualizados';
+
+        return view('update_success',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+    }
+
 }

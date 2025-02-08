@@ -4,7 +4,6 @@
     <table id="example" class="display nowrap" style="width:100%">
         <thead>
             <tr>
-                <th>Select</th>
                 <th># envio</th>
                 <th>fec. ingreso</th>
                 <th>status</th>
@@ -19,29 +18,17 @@
                 <th>prov.</th>
                 <th>país</th>
                 <th>nom. recep.</th>
-                <th>descripción</th>
                 <th>fec. 1ra visit</th>
                 <th>fec. entreg.</th>
                 <th>fec. no entr.</th>
-                <th>cadete1</th>
-                <th style="display: none;">admin_cad1</th>
-                <th style="display: none;">fec. asig1</th>
-                <th style="display: none;">cadete-2</th>
-                <th style="display: none;">admin_cad2</th>
-                <th style="display: none;">fec. asig2</th>
-                <th style="display: none;">cadete-3</th>
-                <th style="display: none;">admin_cad3</th>
-                <th style="display: none;">fec. asig3</th>
                 <th>Status logis.</th>
                 <th>coment. logist.</th>
-                <th style="display: none;">sticker</th>
             </tr>
         </thead>
         <tbody  id="data_table">
 
             @foreach ($packets as $pack)
                 <tr>
-                    <td><input type="checkbox" class="Checkbox"></td>
 
                     @foreach ($pack as $key => $value )
 
@@ -49,12 +36,12 @@
                             ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete1') && ($key != 'cadete2') && 
                             ($key != 'cadete3') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')  && ($key != 'status_logistica')  && 
                             ($key != 'Latit')  && ($key != 'Longi')  && ($key != 'admin_cad1')  && ($key != 'admin_cad2')  && ($key != 'admin_cad3')  &&
-                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3')) 
+                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key != 'description')) 
                             <td class='{{ $key }}'> {{ $value }}</td>
                         @endif
 
                         @if ($key === 'id_ship')
-                            <td class="id_ship"> {{ $value }} <i class="fa fa-qrcode" aria-hidden="true"></i> <i class="fa fa-eye" aria-hidden="true"></i></td>
+                            <td class="id_ship"> {{ $value }} </td>
                         @endif
 
                         @if ($key == 'status')
@@ -112,24 +99,10 @@
                                         <td> {{ $variab['name'] }}</td>
                                         @break
                                     @endif
-
-                                    @if ($variab['id_MELI'] == $clients[count($clients)-1]['id_MELI'])   {{-- Sólo se usa si no se consigue el cadete --}}
-                                        <td> {{ $value }}</td>
-                                    @endif
-
                                 @endforeach
 
                             @endif
 
-                        @endif
-
-                        @if ($key === 'sticker')
-                            @if (is_null($value))
-                                <td style="display: none;">(vacio)</td>
-                            @else
-                                <td style="display: none;"> {{ $value }}</td>
-                            @endif
-                            
                         @endif
 
                         @if ($key === 'delivery_preference')
@@ -148,44 +121,7 @@
                             <td>{{ $value }} {{ $pack['street_number'] }}</td>
                         @endif
 
-                        @if (($key === 'cadete1') || ($key === 'cadete2') || ($key === 'cadete3'))
-                            @foreach ($cadetes as $ct => $variab)
-                                @if ($variab['num_cadete'] == $value)
-                                    @if ($key === 'cadete1')
-                                        <td> {{ $variab['nombre'] }} {{ $variab['apellido'] }}</td>
-                                        @break
-                                    @else
-                                        <td style="display: none;"> {{ $variab['nombre'] }} {{ $variab['apellido'] }}</td>
-                                        @break
-                                    @endif
-                                @endif
-                                @if ($variab['num_cadete'] == $cadetes[count($cadetes)-1]['num_cadete'])   {{-- Sólo se usa si no se consigue el cadete --}}
-                                    @if ($key === 'cadete1')
-                                        <td> {{ $value }}</td>
-                                        @break
-                                    @else
-                                        <td style="display: none;"> {{ $value }}</td>
-                                        @break
-                                    @endif
-                                @endif
-                            @endforeach
-  
-                        @endif
-
-                        @if (($key === 'admin_cad1') || ($key === 'admin_cad2') || ($key === 'admin_cad3'))
-                            @foreach ($admin as $id => $variab)
-                                @if ($variab['id'] == $value)
-                                    <td style="display: none;"> {{ $variab['name'] }}</td>
-                                    @break
-                                @endif
-                                @if ($variab['id'] == $admin[count($admin)-1]['id']) 
-                                    <td style="display: none;"> {{ $value }}</td> {{-- Sólo se usa si no se consigue el administrador --}}
-                                @endif
-                            @endforeach
-                            
-                        @endif
-
-                        @if (($key === 'time_cad1') || ($key === 'time_cad2') || ($key === 'time_cad3'))
+                        @if ($key === 'time_cad1')
                             <td style="display: none;"> {{ $value }}</td>     
                         @endif
 
@@ -248,37 +184,25 @@
         </tbody>
         <tfoot>
             <tr>
-                <th>Select</th>
-                <th class="id_ship"># envio</th>
-                <th class="date_in">fec. ingreso</th>
-                <th class="status">status</th>
+                <th># envio</th>
+                <th>fec. ingreso</th>
+                <th>status</th>
                 <th style="display: none;"># cliente</th>
-                <th class="sender_id">nom. cliente</th>
-                <th class="order:id"># venta</th>
-                <th class="street_name">calle</th>
-                <th class="comment">comentario</th>
-                <th class="zip_code">Cod. postal</th>
-                <th class="city">ciudad</th>
+                <th>nom. cliente</th>
+                <th># venta</th>
+                <th>calle</th>
+                <th>comentario</th>
+                <th>Cod. postal</th>
+                <th>ciudad</th>
                 <th style="display: none;">delivery_preference</th>
-                <th class="state">prov.</th>
-                <th class="country">país</th>
-                <th class="receiver_name">nom. recep.</th>
-                <th class="description">descripción</th>
-                <th class="date_first_visit">fec. 1ra visit</th>
-                <th class="date_delivered">fec. entreg.</th>
-                <th class="date_not_delivered">fec. no entr.</th>
-                <th class="cadete1">cadete-1</th>
-                <th style="display: none;">admin_cad1</th>
-                <th style="display: none;">fec. asig1</th>
-                <th style="display: none;">cadete-2</th>
-                <th style="display: none;">admin_cad2</th>
-                <th style="display: none;">fec. asig2</th>
-                <th style="display: none;">cadete-3</th>
-                <th style="display: none;">admin_cad3</th>
-                <th style="display: none;">fec. asig3</th>
-                <th class="status_logistica">Status logis.</th>
-                <th class="comment_logis">coment. logist.</th>
-                <th style="display: none;">sticker</th>
+                <th>prov.</th>
+                <th>país</th>
+                <th>nom. recep.</th>
+                <th>fec. 1ra visit</th>
+                <th>fec. entreg.</th>
+                <th>fec. no entr.</th>
+                <th>Status logis.</th>
+                <th>coment. logist.</th>
             </tr>
         </tfoot>
     </table>

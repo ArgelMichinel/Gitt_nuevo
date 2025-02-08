@@ -71,7 +71,7 @@ function constr_list_update() {
         if (conta>(num_datos-1)) {
             clearInterval(itera);
         } 
-    },112);
+    },112); // Acá se fija el intervalo entre las actualizaciones de los envíos
     
 }
 /////////////////////////////
@@ -115,7 +115,7 @@ function request_data(sender_id, shipnum) {
 
     }
 
-    Ajax.open("GET","./info_shipping.php?sender_id="+sender_id+"&shipnum="+shipnum,true);
+    Ajax.open("GET","./admin/info_packets?sender_id="+sender_id+"&shipnum="+shipnum,true);
 
     Ajax.send();
 
