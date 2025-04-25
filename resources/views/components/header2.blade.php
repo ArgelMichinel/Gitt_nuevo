@@ -48,8 +48,9 @@
     <a href="{{ route('asignar') }}">Egresar envíos</a>
     <a href="{{ route('mostrarenvios') }}">Envios registrados / Crear lista</a>
     <a href="{{ route('mostrarListas') }}">Manejar lista</a>
-    <a href="update_packets.php">Actualizar envíos</a>
+    <a href="{{ route('mostrarUpdate') }}">Actualizar envíos</a>
     <a href="{{ route('info_packets') }}">Consultar envíos sin registrar</a>
+    <a href="{{ route('mostrarprecio') }}">Asignar precios a envíos</a>
     <a href="{{ route('infoCliente') }}">Info de cliente</a>
     <a href="{{ route('registrarCadete') }}">Agregar Cadete</a>
     <a href="{{ route('mostrarCadete') }}">Listar Cadetes</a>

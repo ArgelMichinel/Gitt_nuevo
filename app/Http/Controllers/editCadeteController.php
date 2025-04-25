@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\cadetes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class editCadeteController extends Controller
 {
@@ -55,7 +56,7 @@ class editCadeteController extends Controller
             $num_cadete= rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9);
             $new_cadete ['num_cadete']= $num_cadete;
             
-            $num_logged = cadetes::where('num_cadete','=',$num_cadete)->first()->toArray();
+            $num_logged = cadetes::where('num_cadete','=',$num_cadete)->first();
             if ( !isset($num_logged['dni']) ) {
                 $bande = 1;
             }
@@ -63,10 +64,13 @@ class editCadeteController extends Controller
         
         $cadete->nombre = $new_cadete['nombre'];
         $cadete->apellido = $new_cadete['apellido'];
+        $cadete->email = $new_cadete['email'];
+        $cadete->num_cadete = $new_cadete ['num_cadete'];
         $cadete->dni = $new_cadete['dni'];
         $cadete->telefono = $new_cadete['telefono'];
         $cadete->direcc = $new_cadete['direcc'];
         $cadete->status = $new_cadete['status'];
+        $cadete->password = Hash::make($new_cadete['password']);
 
         $cadete -> save();
     

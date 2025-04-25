@@ -33,6 +33,7 @@
                   <p style="font-size: 25px; color: black;">Esta acción no puede ser deshecha. ¿Está suguro de que desea borrar la lista?</p>
                   
                     <form action="" method="post">
+                        @csrf
                         <input type="text" name="list" id="listsel2" style="display: none;">
                         <div class="clearfix">
                             <button type="button" class="btn3 cancelbtn" onclick="document.getElementById('id01').style.display='none'" style="background-color: #484242;">Cancelar</button>

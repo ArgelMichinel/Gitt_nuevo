@@ -10,11 +10,12 @@ class Controller_QRgenerator extends Controller
 {
     public function generarQR(Request $request, string $tag)
     {
+        $tag = rawurldecode($tag);
         $title = "QR envío " . $tag;
 
         try {
             
-            $codeText = str_replace(" ", "+", $tag);  // remember to sanitize that - it is user input!
+            $codeText = substr($tag,1); //str_replace(" ", "+", $tag);  // remember to sanitize that - it is user input!
     
             $qrCode = QrCode::size(300)->generate($codeText);
     

@@ -125,10 +125,122 @@ class MELIService
         
         return $datos;
     }
+    ////////////////////////////////////////////////////////////////
+    
+    public function integracion_Tiendanube($code,$CLIENT_ID_TN,$client_secret,$URL_TN) {
+
+        $body = array(
+                        'grant_type' => 'authorization_code',
+                        'client_id' => $CLIENT_ID_TN,
+                        'client_secret' => $client_secret,
+                        'code' => $code
+                    );
+    
+        $headers_req =array(
+                            'Content-Type' => 'application/x-www-form-urlencoded'
+                         );
+    
+        $cliente = curl_init();
+        curl_setopt($cliente, CURLOPT_URL, $URL_TN);
+        curl_setopt($cliente, CURLOPT_POST, TRUE);
+        curl_setopt($cliente, CURLOPT_HTTPHEADER, $headers_req);
+        curl_setopt($cliente, CURLOPT_POSTFIELDS, http_build_query($body));
+        curl_setopt($cliente, CURLOPT_RETURNTRANSFER, true);
+    
+        $result = curl_exec($cliente);
+        curl_close($cliente);
+    
+        //print_r($result);
+    
+        $datos = $result; //json_decode($result,true);
+        if ($result === false) {
+            $datos = curl_error($cliente);
+        }
+        
+        return $datos;
+    }
+    
+    ////////////////////////////////////////////////////////////////
+    
+    public function Crear_carrier_TN($user_id,$access_tok,$NOMBRE_CARRIER_TN,$WEBHOOK_PRECIOS,$CONTACT_APP_TN) {
+    
+        $URL_TN = "https://api.tiendanube.com/2025-03/". $user_id . "/shipping_carriers";
+
+        $body = array(
+                        'name' => $NOMBRE_CARRIER_TN,
+                        'callback_url'  => $WEBHOOK_PRECIOS,
+                        'types'  => 'ship'
+                    );
+    
+        $headers_req =array(
+                            'Authentication: bearer ' . trim($access_tok),
+                            'Content-Type: application/json',
+                            'User-Agent: ' . $NOMBRE_CARRIER_TN . ' (' . $CONTACT_APP_TN . ')'
+                         );
+    
+        $cliente = curl_init();
+        curl_setopt($cliente, CURLOPT_URL, $URL_TN);
+        curl_setopt($cliente, CURLOPT_POST, TRUE);
+        curl_setopt($cliente, CURLOPT_HTTPHEADER, $headers_req);
+        curl_setopt($cliente, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt($cliente, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($cliente, CURLOPT_RETURNTRANSFER, true);
+    
+        $result = curl_exec($cliente);
+        
+        curl_close($cliente);
+    
+        //print_r($result);
+    
+        $datos = $result; //json_decode($result,true);
+        if ($result === false) {
+            $datos = curl_error($cliente);
+        }
+        
+        return $datos;
+    }
+    ////////////////////////////////////////////////////////////////
+    
+    public function Crear_carrier_opt_TN($user_id,$access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_carrier) {
+    
+        $URL_TN = "https://api.tiendanube.com/2025-03/". $user_id . "/shipping_carriers/". $id_carrier . "/options";
+
+        $body = array(
+                        'code' => 'standard',
+                        'name'  => 'Servicio de envío Estándar'
+                    );
+    
+        $headers_req =array(
+                            'Authentication: bearer ' . trim($access_tok),
+                            'Content-Type: application/json',
+                            'User-Agent: ' . $NOMBRE_CARRIER_TN . ' (' . $CONTACT_APP_TN . ')'
+                         );
+    
+        $cliente = curl_init();
+        curl_setopt($cliente, CURLOPT_URL, $URL_TN);
+        curl_setopt($cliente, CURLOPT_POST, TRUE);
+        curl_setopt($cliente, CURLOPT_HTTPHEADER, $headers_req);
+        curl_setopt($cliente, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt($cliente, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($cliente, CURLOPT_RETURNTRANSFER, true);
+    
+        $result = curl_exec($cliente);
+        
+        curl_close($cliente);
+    
+        //print_r($result);
+    
+        $datos = $result; //json_decode($result,true);
+        if ($result === false) {
+            $datos = curl_error($cliente);
+        }
+        
+        return $datos;
+    }
     
     ///////////////////////////////////////////////////////
     public function update_access($fields) {
-        $access_meli_selecc = access_meli::where('user_id', $fields->user_id)->get();
+        $access_meli_selecc = access_meli::where('user_id','=',$fields->user_id)->get();
         
         $access_meli_selecc =$fields;
 
@@ -137,10 +249,16 @@ class MELIService
     
     //////////////////////////////////////////////////////// modificado
     
-    public function update($table, $primaryKey, $fields) {
+    public function update_envios($primaryKey, $fields) {
     
-        $seleccionado = DB::table($table)->where($primaryKey, '=', $fields[$primaryKey])->get(); 
-        $seleccionado = $fields;
+        $seleccionado = envios::where($primaryKey, '=', $fields[$primaryKey])->first(); 
+
+        $seleccionado->status = $fields['status'];
+        $seleccionado->street_name = $fields['street_name'];
+        $seleccionado->date_first_visit = $fields['date_first_visit'];
+        $seleccionado->date_delivered = $fields['date_delivered'];
+        $seleccionado->date_not_delivered = $fields['date_not_delivered'];
+        
         $seleccionado -> save();
     }
     
@@ -165,10 +283,10 @@ class MELIService
         $interva = $this-> Diff_On_Sec ($interva);
         //dd($interva);
         
-        if ($interva > 648000) {
+        if ($interva > 15552000) { 
                 $message = 'Usuario con credenciales expiradas';
                 dd($message);
-        } elseif (($interva > 21600) and ($interva < 648000)) {
+        } elseif (($interva > 21600) and ($interva < 15552000)) {
                 $datos = $this-> refresh_tok($APP_ID,$SECRET_KEY,$dat_user['refresh_tok']);
                 //dd($datos);
                 
@@ -220,9 +338,9 @@ class MELIService
             
         if (isset($parameters['incl_cadete'])) {
                 if ($parameters['cadete'] == 'none') {
-                    $envios -> where('cadete', null);
+                    $envios -> where('cadete1', null);
                 } else {
-                    $envios -> where('cadete', $parameters['cadete']);
+                    $envios -> where('cadete1', $parameters['cadete']);
                 }
         }
         if (isset($parameters['incl_ayer'])) {
@@ -281,8 +399,48 @@ class MELIService
                 ];
                 $envios -> whereIn('zip_code', $Auxiliar);
                 break;
-              default:
+
                 
+            case "Zona 4":
+                $Auxiliar = [
+                    1619, 1620, 1623, 1625, 1625, 1625, 1625, 1626, 1627, 1627, 1628, 1629, 1630, 1631, 1632, 1633, 1633, 1633, 1633, 
+                    1634, 1635, 1635, 1647, 1664, 1664, 1667, 1667, 1669, 1717, 1727, 1747, 1748, 1748, 1749, 1787, 1788, 1790, 1791, 
+                    1793, 1808, 1809, 1811, 1812, 1812, 1814, 1815, 1816, 1816, 1816, 1816, 1816, 1856, 1858, 1862, 1864, 1865, 1866, 
+                    1894, 1894, 1895, 1896, 1897, 1897, 1898, 1898, 1900, 1900, 1900, 1901, 1901, 1901, 1902, 1903, 1903, 1903, 1903, 
+                    1904, 1905, 1906, 1907, 1907, 1908, 1909, 1910, 1912, 1914, 1916, 1923, 1924, 1924, 1925, 1925, 1926, 1927, 1929, 
+                    1931, 1933, 2800, 2800, 2800, 2801, 2801, 2802, 2804, 2804, 2804, 2804, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 
+                    2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 
+                    2805, 2806, 2806, 2808, 2812, 2812, 2812, 2812, 2814, 2816, 6700, 6700, 6700, 6700, 6701, 6702, 6706, 6706, 6706, 
+                    6708, 6712, 6712, 6717
+                ];
+                $envios -> whereIn('zip_code', $Auxiliar);
+            break;
+              
+                default:
+                    $datos['zip_max'] = 1500;
+                    $Auxiliar = [
+                                1602, 1603, 1604, 1605, 1606, 1607, 1609, 1636, 1637, 1637, 1638, 1639, 1640, 1641, 1642, 1643, 1644, 1645, 1649, 
+                                1650, 1651, 1652, 1653, 1654, 1655, 1657, 1672, 1674, 1675, 1676, 1678, 1682, 1683, 1684, 1685, 1686, 1687, 1688, 
+                                1689, 1690, 1691, 1692, 1701, 1702, 1703, 1704, 1706, 1707, 1708, 1710, 1712, 1713, 1714, 1715, 1721, 1751, 1752, 
+                                1753, 1754, 1766, 1768, 1770, 1771, 1772, 1773, 1774, 1785, 1809, 1821, 1822, 1823, 1824, 1825, 1826, 1827, 1828, 
+                                1829, 1831, 1832, 1833, 1834, 1835, 1836, 1868, 1869, 1870, 1871, 1872, 1873, 1874, 1875, 1608, 1610, 1611, 1612, 
+                                1613, 1614, 1615, 1616, 1617, 1618, 1621, 1622, 1624, 1646, 1648, 1659, 1660, 1661, 1662, 
+                                1663, 1664, 1665, 1666, 1670, 1716, 1718, 1722, 1723, 1724, 1736, 1738, 1740, 1742, 1743, 1744, 1745, 1746, 1750, 
+                                1755, 1756, 1757, 1758, 1759, 1761, 1763, 1764, 1765, 1776, 1778, 1780, 1781, 1786, 1789, 1801, 1802, 1803, 1804, 
+                                1805, 1806, 1807, 1812, 1813, 1837, 1838, 1839, 1840, 1841, 1842, 1843, 1844, 1845, 1846, 1847, 1848, 1849, 1850, 
+                                1851, 1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859, 1860, 1861, 1862, 1863, 1867, 1876, 1877, 1878, 1879, 1880, 
+                                1881, 1882, 1883, 1884, 1885, 1886, 1887, 1888, 1889, 1890, 1891, 1892, 1893, 1916,
+                                1619, 1620, 1623, 1625, 1625, 1625, 1625, 1626, 1627, 1627, 1628, 1629, 1630, 1631, 1632, 1633, 1633, 1633, 1633, 
+                                1634, 1635, 1635, 1647, 1664, 1664, 1667, 1667, 1669, 1717, 1727, 1747, 1748, 1748, 1749, 1787, 1788, 1790, 1791, 
+                                1793, 1808, 1809, 1811, 1812, 1812, 1814, 1815, 1816, 1816, 1816, 1816, 1816, 1856, 1858, 1862, 1864, 1865, 1866, 
+                                1894, 1894, 1895, 1896, 1897, 1897, 1898, 1898, 1900, 1900, 1900, 1901, 1901, 1901, 1902, 1903, 1903, 1903, 1903, 
+                                1904, 1905, 1906, 1907, 1907, 1908, 1909, 1910, 1912, 1914, 1916, 1923, 1924, 1924, 1925, 1925, 1926, 1927, 1929, 
+                                1931, 1933, 2800, 2800, 2800, 2801, 2801, 2802, 2804, 2804, 2804, 2804, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 
+                                2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 2805, 
+                                2805, 2806, 2806, 2808, 2812, 2812, 2812, 2812, 2814, 2816, 6700, 6700, 6700, 6700, 6701, 6702, 6706, 6706, 6706, 
+                                6708, 6712, 6712, 6717
+                            ];
+                            $envios -> where('zip_code', '>', 1500) -> whereNotIn('zip_code', $Auxiliar);
             }
         }
         if (isset($parameters['incl_comercial'])) {
@@ -325,14 +483,14 @@ class MELIService
     
     /////////////////////////////////////////////////////// modificada
     
-    public function update_by_lots ($table, $primaryKey, $fields) {
+    public function update_by_lots ($primaryKey, $fields) {
         
         $n_data = count($fields);
         for ($i = 0; $i < $n_data; $i++) {
             
             $fila = $fields[$i];
             /////////////////////////////////////////////////
-            $this -> update($table, $primaryKey, $fila);
+            $this -> update_envios($primaryKey, $fila);
             
         }  
         
@@ -345,7 +503,7 @@ class MELIService
         $n_data = count($fields);
         for ($i = 0; $i < $n_data; $i++) {
             
-            $selec = envios::where('id_ship','=',$fields[$i]['id_ship']);
+            $selec = envios::where('id_ship','=',$fields[$i]['id_ship'])->first();
             $selec-> cadete3 = $selec-> cadete2;
             $selec-> time_cad3 = $selec-> time_cad2;
             $selec-> admin_cad3 = $selec-> admin_cad2;
@@ -378,6 +536,7 @@ class MELIService
     
         //////////////////////////////////////
         $shipping_res = json_decode($shipping,true);
+        //dd($shipping_res);
         
         $shipping = [];
         $shipping[0] = $shipnum;                   //'id_ship'

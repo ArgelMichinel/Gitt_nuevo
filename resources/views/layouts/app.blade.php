@@ -35,6 +35,10 @@
 
 <body>
 
+    @auth('cadetes')
+        <x-header4 :title="$title"></x-header4>
+    @endauth
+
     @auth('clientes')
         <x-header3 :title="$title"></x-header3>
     @endauth

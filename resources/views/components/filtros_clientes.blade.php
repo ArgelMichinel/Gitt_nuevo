@@ -14,7 +14,8 @@
                                     <option value='Zona 1'>CABA</option>
                                     <option value='Zona 2'>GBA1</option>
                                     <option value='Zona 3'>GBA2</option>
-                                    <option value='Zona 4'>Sin coincidencia</option>
+                                    <option value='Zona 4'>GBA3</option>
+                                    <option value='Zona 5'>Sin coincidencia</option>
                                 </select>
                             </th>
                         </tr>

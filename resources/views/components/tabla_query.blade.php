@@ -23,6 +23,7 @@
                 <th>fec. 1ra visit</th>
                 <th>fec. entreg.</th>
                 <th>fec. no entr.</th>
+                <th>admin. ingreso</th>
                 <th>cadete1</th>
                 <th style="display: none;">admin_cad1</th>
                 <th style="display: none;">fec. asig1</th>
@@ -49,7 +50,7 @@
                             ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete1') && ($key != 'cadete2') && 
                             ($key != 'cadete3') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')  && ($key != 'status_logistica')  && 
                             ($key != 'Latit')  && ($key != 'Longi')  && ($key != 'admin_cad1')  && ($key != 'admin_cad2')  && ($key != 'admin_cad3')  &&
-                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3')) 
+                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key != 'admin_ingre')) 
                             <td class='{{ $key }}'> {{ $value }}</td>
                         @endif
 
@@ -185,6 +186,19 @@
                             
                         @endif
 
+                        @if ($key === 'admin_ingre')
+                            @foreach ($admin as $id => $variab)
+                                @if ($variab['id'] == $value)
+                                    <td> {{ $variab['name'] }}</td>
+                                    @break
+                                @endif
+                                @if ($variab['id'] == $admin[count($admin)-1]['id']) 
+                                    <td> {{ $value }}</td> {{-- Sólo se usa si no se consigue el administrador --}}
+                                @endif
+                            @endforeach
+                            
+                        @endif
+
                         @if (($key === 'time_cad1') || ($key === 'time_cad2') || ($key === 'time_cad3'))
                             <td style="display: none;"> {{ $value }}</td>     
                         @endif
@@ -267,6 +281,7 @@
                 <th class="date_first_visit">fec. 1ra visit</th>
                 <th class="date_delivered">fec. entreg.</th>
                 <th class="date_not_delivered">fec. no entr.</th>
+                <th class="admin_ingre">admin. ingreso</th>
                 <th class="cadete1">cadete-1</th>
                 <th style="display: none;">admin_cad1</th>
                 <th style="display: none;">fec. asig1</th>

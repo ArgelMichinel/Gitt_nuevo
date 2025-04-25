@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\administ;
 use App\Models\cadetes;
 use App\Models\clientes;
-use App\Models\envios;
 use App\Models\listas;
 //use App\Models\access_meli;
 use App\Services\MELIService;
@@ -80,23 +79,52 @@ class ControllerPackets extends Controller
     }
 
     public function mostrarUpdate() {
-        
-        $get_param = request()->input('new_query');
-        $title='Consulta de paquetes';
 
-        if (isset($get_param)) {
-            $packets = $this->MELIService->query_customized($get_param);
+        $shipnum = request()->input('shipnum');
+
+        if ($shipnum) {
+
+            $APP_ID = env('APP_ID');
+            $SECRET_KEY = env('SECRET_KEY');
+
+            $sender_id = (int) request()->input('sender_id');
+            $client_info = $this->MELIService->checkValdTok($sender_id,$APP_ID, $SECRET_KEY);// checkValdTok($pdo, $sender_id);
+            $ACCESS_TOK = $client_info['access_tok'];
+
+            $shipnum = (int) request()->input('shipnum');;
+
+            if (isset($_GET['sticker'])) {
+                $sticker = $_GET['sticker'];
+            } else {
+                $sticker = '(vacio)';
+            }
+
+            $ship_mat = $this->MELIService->print_answer ($shipnum, $ACCESS_TOK, $sender_id,$sticker);
+
+            $ship_mat = rawurlencode( json_encode($ship_mat));
+
+            echo ($ship_mat);
+            //print_r($ship_mat);
+
         } else {
-            $packets = $this->MELIService->getLatestPackets();
-        }
+            $get_param = request()->input('new_query');
+            $title='Consulta de paquetes';
 
-        //dd($packets);
+            if (isset($get_param)) {
+                $packets = $this->MELIService->query_customized($get_param);
+            } else {
+                $packets = $this->MELIService->getLatestPackets();
+            }
+
+            //dd($packets);
+            
+            $clients = clientes::all()->toArray();
+            $cadetes = cadetes::all()->toArray();
+            $admin = administ::all()->toArray();
+            
+            return view('update_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+        }
         
-        $clients = clientes::all()->toArray();
-        $cadetes = cadetes::all()->toArray();
-        $admin = administ::all()->toArray();
-        
-        return view('update_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
     }
 
     public function post_update() {

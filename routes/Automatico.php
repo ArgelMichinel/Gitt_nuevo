@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ControllerPackets;
 use App\Models\clientes;
+use App\Models\envios;
 use App\Services\MELIService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,7 @@ $clientes = clientes::all();
 for ($j=0; $j < count($envios); $j++) { 
 
     $sticker = $envios[$j]['sticker'];
-    
+
     ///////Acá se evalúa si el envío es de MELI o TN
     for ($i=0; $i < count($clientes); $i++) { 
                 
@@ -52,32 +53,15 @@ for ($j=0; $j < count($envios); $j++) {
 
     }
 
-    $packets = [];
-    $packets['id_ship'] = $ship_mat[0][0];
-    $packets['date_in'] = $ship_mat[0][1];
-    $packets['status'] = $ship_mat[0][2];
-    $packets['sender_id'] = $ship_mat[0][3];
-    $packets['order_id'] = $ship_mat[0][4];
-    $packets['street_name'] = $ship_mat[1][0];
-    $packets['street_number'] = $ship_mat[1][1];
-    $packets['comment'] = $ship_mat[1][2];
-    $packets['zip_code'] = $ship_mat[1][3];
-    $packets['city'] = $ship_mat[1][4];
-    $packets['state'] = $ship_mat[1][5];
-    $packets['country'] = $ship_mat[1][6];
-    $packets['latitude'] = $ship_mat[1][7];
-    $packets['longitude'] = $ship_mat[1][8];
-    $packets['geolocation_last_updated'] = $ship_mat[1][9];
-    $packets['delivery_preference'] = $ship_mat[1][10];
-    $packets['receiver_name'] = $ship_mat[2][0];
-    $packets['receiver_phone'] = $ship_mat[2][1];
-    $packets['description'] = $ship_mat[3][0];
-    $packets['dimensions'] = $ship_mat[3][1];
-    $packets['date_first_visit'] = $ship_mat[4][0];
-    $packets['date_delivered'] = $ship_mat[4][1];
-    $packets['date_not_delivered'] = $ship_mat[4][2];
-    $packets['sticker'] = $sticker;
+    $packets = envios::find($envios[$j]['id_num']);
 
+    $packets->status = $ship_mat[0][2];
+    $packets->street_name = $ship_mat[1][0];
+    $packets->date_first_visit = $ship_mat[4][0];
+    $packets->date_delivered = $ship_mat[4][1];
+    $packets->date_not_delivered = $ship_mat[4][2];
+
+    $packets->save();
 }
 
 

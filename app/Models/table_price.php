@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class envios extends Model
+class table_price extends Model
 {
-    protected $table = "envios";
+    protected $table = "table_price";
     public $timestamps = false;
-    protected $primaryKey = "id_num";
     use HasFactory;
 
     protected $fillable = [

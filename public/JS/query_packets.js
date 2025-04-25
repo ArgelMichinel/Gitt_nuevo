@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function ()    {
         
         //alert(selec_QR);
         let foo = prompt('Copia el QR',selec_QR);
-        window.open('QRgenerator/' + selec_QR);
+        window.open('QRgenerator/' + encodeURIComponent(selec_QR));
         });
         
     }});

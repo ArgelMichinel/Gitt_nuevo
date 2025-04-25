@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\access_meli;
+use App\Models\access_nube;
 use App\Models\clientes;
 use Illuminate\Http\Request;
 use App\Services\MELIService;
 use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Response;
 
 class IntegracionController extends Controller
 {
@@ -136,4 +138,141 @@ class IntegracionController extends Controller
         return view('grant_permission',compact('title'));
 
     }
+
+    public function integrarTiendaNube () {
+        $code = request()->input('code');
+
+        if ($code) {
+            $CLIENT_ID_TN = env('CLIENT_ID_TN');
+            $client_secret = env('SECRET_KEY_TN');
+            $URL_TN = env('URL_TN');
+            
+            $datos = $this -> MELIService -> integracion_Tiendanube($code,$CLIENT_ID_TN,$client_secret,$URL_TN);
+            $datos = json_decode($datos, true);
+            //var_dump($datos);
+
+            $registro = access_nube::where('user_id','=',$datos["user_id"])->get();
+            
+            $title='Registro de usuario';
+
+            return view('curl_TN',compact('registro','title','datos'));
+
+        } else {
+            return redirect(route('integrar_NUBE'));
+            die();
+            
+        }
+    }
+
+    public function IntegrarNube_respu () {
+
+        $new_user = request()->input('new_user');
+        $num_errores = 0;
+
+        if (empty($new_user['email'])) {
+            $num_errores += 1;
+            $errores[] = 'El campo de email no puede quedar en blanco';
+        }
+        else {
+            if (filter_var($new_user['email'], FILTER_VALIDATE_EMAIL) == false) {
+                $num_errores += 1;
+                $errores[] = 'Dirección inválida de email';
+            }
+            // convert the email to lowercase
+            $new_user['email'] = strtolower($new_user['email']);
+            // Search for the lowercase version of $author['email']
+            if (count( $this -> MELIService ->findSeveral('clientes','id',$new_user['user_id'])) === 0) {
+                if (count( $this -> MELIService ->findSeveral('clientes','email',$new_user['email'])) > 0) {
+                    $num_errores += 1;
+                    $errores[] = 'Este email ya ha sido registrado';
+                }
+            } 
+        }
+        
+        if ($num_errores == 0) {
+
+            $new_user['password'] = password_hash($new_user['password'], PASSWORD_DEFAULT);
+
+            $usuario = new clientes();
+            $usuario->name = $new_user["nombre"];
+            $usuario->email = $new_user["email"];
+            $usuario->password = $new_user["password"];
+            $usuario->remember_token = Str::random(60);
+            $usuario->created_at = new \DateTime();
+            $usuario->updated_at = new \DateTime();
+            $usuario->id_TN = $new_user["user_id"];
+
+            $usuario->save();
+
+            $existe = access_nube::where('user_id','=',$new_user["user_id"])->get()->toArray();
+
+            if (count($existe) == 0) { //Condicional para saber si es un usuario nuevo o una actualización de access token
+                $mensaje = 'Se registró un nuevo usuario';
+                $title='Registro de nuevo usuario';
+            } else {
+                $mensaje = 'Se actualizó usuario existente';
+                $title='Actualización de usuario';
+            }
+
+            $Nombre_nube = $new_user["nombre"]; 
+            //var_dump($new_user);
+
+            $usuario_nube = new access_nube();
+            $usuario_nube-> id = $usuario["id"];
+            $usuario_nube-> user_id = $new_user["user_id"];
+            $usuario_nube-> access_tok = $new_user["access_tok"];
+            $usuario_nube-> fec_hora = Carbon::now();
+            $usuario_nube-> Nombre = $Nombre_nube;
+            $usuario_nube-> alcance = $new_user["alcance"];
+
+            $usuario_nube->save();
+            //dd($usuario_nube);
+
+            $NOMBRE_CARRIER_TN = env('NOMBRE_CARRIER_TN');
+            $WEBHOOK_PRECIOS = env('WEBHOOK_PRECIOS');
+            $CONTACT_APP_TN = env('CONTACT_APP_TN');
+
+            $respu_crear_carrier = $this -> MELIService ->Crear_carrier_TN($usuario_nube-> user_id,$usuario_nube-> access_tok,$NOMBRE_CARRIER_TN,$WEBHOOK_PRECIOS,$CONTACT_APP_TN);
+            $respu_crear_carrier = json_decode($respu_crear_carrier,true);
+            
+            if (!isset($respu_crear_carrier['name'])) {         //Se ejecuta si ocurre un error al crear el carrier
+                var_dump("Ha ocurrido un problema");
+                dd($respu_crear_carrier);
+            }
+
+            $id_carrier = $respu_crear_carrier['id'];
+            //dd($respu_crear_carrier);
+            $respu_opc_carrier = $this -> MELIService ->Crear_carrier_opt_TN($usuario_nube-> user_id,$usuario_nube-> access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_carrier);
+            $respu_opc_carrier = json_decode($respu_opc_carrier,true);
+
+            if (!isset($respu_opc_carrier['name'])) {         //Se ejecuta si ocurre un error al crear la opción del carrier
+                var_dump("Ha ocurrido un problema");
+                dd($respu_opc_carrier);
+            }
+            //dd($respu_opc_carrier);
+
+            if (isset($errores)) {
+                return view('integracion_success',compact('title','errores','mensaje','num_errores'));
+            }
+
+            return view('integracion_success',compact('title','mensaje','num_errores'));
+            
+        }
+    }
+
+    public function descarga_manual() {
+        $filePath = storage_path('app/public/Instalacion_app_Tienda_nube.pdf');
+        return Response::download($filePath, 'Instalacion_app_Tienda_nube.pdf');
+    } 
+
+/*     public function prueba() {
+        $prueba = access_nube::where('user_id','=',5755375)->first();
+        $NOMBRE_CARRIER_TN = env('NOMBRE_CARRIER_TN');
+        $CONTACT_APP_TN = env('CONTACT_APP_TN');
+        $id_carrier = 3617394;
+        
+        $respu_opc_carrier = $this -> MELIService ->Crear_carrier_opt_TN($prueba->user_id,$prueba->access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_carrier);
+        
+        dd($respu_opc_carrier);
+    } */
 }

@@ -14,4 +14,15 @@ class UserAdminController extends Controller
 
         return view('userAdmin',compact('title', 'administra'));
     }
+
+    public function borrarAdmin() {
+        $id_admin = request()->input('del_admin');
+
+        $cadete_eliminado = administ::where('email','=',$id_admin);
+        $cadete_eliminado->delete();
+    
+        //////////////////////////////////////
+        $title='Administrador Eliminado';
+        return view('deleted_admin', compact('title'));
+    }
 }

@@ -13,11 +13,11 @@
       
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <a class="enlace" href="{{ route('integrar_MELI') }}"> Mercado Libre </a>
+                <a class="enlace" href="{{ route('integrar_NUBE') }}"> Tienda Nube </a>
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <a class="enlace" href="{{ route('integrar_MELI') }}"> Tienda Nube</a>
+                <a class="enlace" href="{{ route('integrar_MELI') }}"> Mercado Libre </a>
             </div>
         </div>
         

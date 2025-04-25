@@ -9,8 +9,10 @@
 <div class="extern">
   
     <div class="formu">
-        <div id="respuesta"><h2>{{ $mensaje }}</h2></div>
-        <a class="underH" href="{{ route('login') }}">Ingresar al sistema</a>
+        <div id="respuesta">
+            <h2>{{ $mensaje }}</h2>
+            <a class="underH" href="{{ route('login') }}">Ingresar al sistema</a>
+        </div>
     </div>
     
 </div>

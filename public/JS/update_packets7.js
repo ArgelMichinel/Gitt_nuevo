@@ -115,7 +115,7 @@ function request_data(sender_id, shipnum) {
 
     }
 
-    Ajax.open("GET","./admin/info_packets?sender_id="+sender_id+"&shipnum="+shipnum,true);
+    Ajax.open("GET","./info_packets?sender_id="+parseInt(sender_id)+"&shipnum="+shipnum,true);
 
     Ajax.send();
 
@@ -132,8 +132,8 @@ function submit_array() {
         if (Ajax.readyState==4 && Ajax.status==200) {
 
             //ship_dat = JSON.parse( decodeURIComponent( Ajax.responseText) );
+            console.log(Ajax.responseText)
             let text = document.createTextNode(Ajax.responseText);
-            //let respu = document.createElement("div"); 
             let mensaje = document.createElement("h2"); 
             mensaje.appendChild(text);
             let list = document.getElementById("main");
@@ -148,8 +148,14 @@ function submit_array() {
 
     let packete = JSON.stringify(  mat_list );
     //console.log(packete);
-    Ajax.open("POST","./save_shipping-u.php",true);
+    Ajax.open("POST","./save_packets_u",true);
     Ajax.setRequestHeader("Content-Type","application/json");
+    
+    // Obtener el token CSRF desde la metaetiqueta del documento HTML
+    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // Agregar el token CSRF en los encabezados
+    Ajax.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+
     Ajax.send( packete );
 
 }

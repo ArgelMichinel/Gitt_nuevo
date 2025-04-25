@@ -35,7 +35,7 @@ class ControllerAsignar extends Controller
         if (isset($parametros['select_list'])) {
             
             $list = $parametros['select_list']['list'];
-            $packets_list = listasenvios::where('id_list','=',$list); //findSeveral('listasenvios','id_list',$list);
+            $packets_list = listasenvios::where('id_list','=',$list)->get(); //findSeveral('listasenvios','id_list',$list);
             $cadete = $parametros['select_list']['cadete'];
             $id_adm = Auth::id();
             

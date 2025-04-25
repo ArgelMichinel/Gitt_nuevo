@@ -31,6 +31,8 @@ class infoPackMeliController extends Controller
                 $sticker = '(vacio)';
             }
 
+            //dd($sticker);
+
             ///////Acá se evalúa si el envío es de MELI o TN
             for ($i=0; $i < count($clientes); $i++) { 
 
@@ -121,7 +123,6 @@ class infoPackMeliController extends Controller
         $packets['date_first_visit'] = $ship_mat[4][0];
         $packets['date_delivered'] = $ship_mat[4][1];
         $packets['date_not_delivered'] = $ship_mat[4][2];
-        $packets['sticker'] = $sticker;
 
         $title='Consultar paquetes sin registrar';
 

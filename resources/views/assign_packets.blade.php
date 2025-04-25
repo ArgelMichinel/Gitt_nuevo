@@ -158,6 +158,7 @@
                     </div>
 
                     <form action="" method="post">
+                        @csrf
                         <input type="text" id="values_scann" name="select_scanner[values]" style="display: none;">
                         <input type="text" id="cadete_scann" name="select_scanner[cadete]" style="display: none;">
                         <button type="submit" id="submit_scann" style="display: none;">someter scanner</button>

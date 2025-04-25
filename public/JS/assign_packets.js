@@ -91,6 +91,7 @@ function prepare_QRdata(content) {
   let myObj = JSON.parse(content);
   let shipnum;
   let repeti;
+  let audiomalo = document.getElementById("trompeta");
     
     repeti = false;
     shipnum = Tipo_tienda + myObj.id;
@@ -101,13 +102,18 @@ function prepare_QRdata(content) {
       }
     }
 
-    check_ingresado (shipnum);
+    if (repeti) {
+      audiomalo.play();
+    } else {
+      check_ingresado (shipnum);
+    }
 
 }
 
 function prepare_data_man() {
   let shipnum = document.getElementById('shipnum').value;
   let repeti;
+  let audiomalo = document.getElementById("trompeta");
     
   repeti = false;
     
@@ -117,8 +123,9 @@ function prepare_data_man() {
     }
   }
 
-  if (repeti == false) {
-    
+  if (repeti) {
+    audiomalo.play();
+  } else {
     check_ingresado (shipnum);
   }
 }

@@ -43,7 +43,7 @@
                 
             </thead>
             <tbody  id="data_table">
-                @for ($i = 0; $i < count($administra); $i++)
+                @for ($i = 1; $i < count($administra); $i++)
                     <tr>
                         @foreach ($administra[$i] as $key => $value )
                             <td>{{ $value }}</td>
@@ -66,20 +66,21 @@
     </div>
 
     <div id="id01" class="modal">
-    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-    <div class="modal-content">
-        <div class="container">
-        <h1>Eliminar administrador</h1>
-        <p style="font-size: 25px; color: black;">Esta acción no puede ser deshecha. ¿Está seguro de que desea borrar el administrador?</p>
+        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <div class="modal-content">
+            <div class="container">
+                <h1>Eliminar administrador</h1>
+                <p style="font-size: 25px; color: black;">Esta acción no puede ser deshecha. ¿Está seguro de que desea borrar el administrador?</p>
 
-        <div class="clearfix">
-            <button type="button" class="btn cancelbtn" onclick="document.getElementById('id01').style.display='none'" style="background-color: #484242;">Cancelar</button>
-            <form action="" method="post">  
-                <input type="text" name="del_admin" id="del_admin" style="display: none; background-color: red;">
-                <button type="submit" class="btn deletebtn">Eliminar</button>
-            </form>
-        </div>
-        </div>
+                <div class="clearfix">
+                    <button type="button" class="btn cancelbtn" onclick="document.getElementById('id01').style.display='none'" style="background-color: #484242;">Cancelar</button>
+                    <form action="" method="post">  
+                        @csrf
+                        <input type="text" name="del_admin" id="del_admin" style="display: none; background-color: red;">
+                        <button type="submit" class="btn deletebtn">Eliminar</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -10,7 +10,7 @@
             <h1><p>Contactos</p></h1>
 
             <div class="tele-div">
-                <p><i class="fa fa-phone"></i>   +54 11 73673255</p>
+                <p><i class="fa fa-phone"></i>   +54 11 25963255</p>
                 <p><i class="fa fa-phone"></i>   +54 11 27397388</p>
             </div>
 

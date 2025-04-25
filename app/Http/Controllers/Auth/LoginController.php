@@ -14,6 +14,8 @@ class LoginController extends Controller
 {
 
     public function ingreso (Request $request) {
+        
+
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
         $perfil = $this->perfil($request);
         
@@ -29,12 +31,15 @@ class LoginController extends Controller
 
         switch ($perfil) {
             case 'administ':
-                return view('auth.login_admin');
-            case 'cadete':
-                return view('auth.login_cadete');
+                $title='Login administrador';
+                return view('auth.login_admin',compact('title'));
+            case 'cadetes':
+                $title='Login cadete';
+                return view('auth.login_cadete',compact('title'));
                 break;
             case 'clientes':
-                return view('auth.login');
+                $title='Login cliente';
+                return view('auth.login',compact('title'));
         }
 
     }
@@ -91,8 +96,8 @@ class LoginController extends Controller
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
         if ($request->is('admin*')) {
             return 'administ';
-        } elseif ($request->is('cadete*')) {
-            return 'cadete';
+        } elseif ($request->is('cadetes*')) {
+            return 'cadetes';
         } else {
             return 'clientes';
         }
@@ -107,7 +112,7 @@ class LoginController extends Controller
                 /* return redirect()->route('desk_admin'); */
                 return redirect()->route('mostrarenvios');
                 break;
-            case 'cadete':
+            case 'cadetes':
                 return redirect()->route('desk_cadete');
                 break;
             case 'clientes':
