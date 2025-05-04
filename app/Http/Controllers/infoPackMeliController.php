@@ -55,7 +55,7 @@ class infoPackMeliController extends Controller
                     $cliente = access_nube::where('user_id','=',$user_id)->first();
                     $id_order = $shipnum;
 
-                    $$NOMBRE_CARRIER_TN = env('$NOMBRE_CARRIER_TN');
+                    $NOMBRE_CARRIER_TN = env('$NOMBRE_CARRIER_TN');
                     $CONTACT_APP_TN = env('CONTACT_APP_TN');
                     $ship_mat = $this -> MELIService -> print_answer_TN ($user_id,$cliente['access_tok'],$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order);
                     
