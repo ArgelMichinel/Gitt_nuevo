@@ -19,6 +19,7 @@ use App\Http\Controllers\infoPackMeliController;
 use App\Http\Controllers\ControllerPrice;
 use App\Http\Controllers\savePackController;
 use App\Http\Controllers\testerController;
+use App\Http\Controllers\WebhookOrdersController;
 use App\Http\Controllers\WebhookPriceController;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,6 +72,7 @@ Route::get('/clientes/grant_permission',[IntegracionController::class,'otorgarPe
 //Route::get('/admin/prueba_actua',[savePackController::class,'prueba_actua'])->middleware('auth:administ'); 
 Route::get('/lkdmflksdflkewfl7d/kdmmdf7d5',[automController::class,'automatico']);
 Route::post('/webhook/price',[WebhookPriceController::class,'RetrivePrice']);
+Route::get('/webhook/notify_orders',[WebhookOrdersController::class,'recibirOrden']);
 //////
-Route::get('creartester/', [testerController::class,'generar']);
+//Route::get('creartester/', [testerController::class,'generar']);
 

@@ -265,14 +265,4 @@ class IntegracionController extends Controller
         return Response::download($filePath, 'Instalacion_app_Tienda_nube.pdf');
     } 
 
-/*     public function prueba() {
-        $prueba = access_nube::where('user_id','=',5755375)->first();
-        $NOMBRE_CARRIER_TN = env('NOMBRE_CARRIER_TN');
-        $CONTACT_APP_TN = env('CONTACT_APP_TN');
-        $id_carrier = 3617394;
-        
-        $respu_opc_carrier = $this -> MELIService ->Crear_carrier_opt_TN($prueba->user_id,$prueba->access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_carrier);
-        
-        dd($respu_opc_carrier);
-    } */
 }

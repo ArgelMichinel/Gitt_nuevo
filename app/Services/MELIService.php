@@ -33,6 +33,39 @@ class MELIService
         return $result;
     }
     
+    //////////////////////////////////////////////////////////// 
+
+    public function info_shipping_TN($user_id,$access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order) {
+
+        $URL_order_TN = "https://api.tiendanube.com/2025-03/". $user_id . "/orders/". $id_order;
+        
+        $headers_req =array(
+            'Authentication: bearer ' . trim($access_tok),
+            'Content-Type: application/json',
+            'User-Agent: ' . $NOMBRE_CARRIER_TN . ' (' . $CONTACT_APP_TN . ')'
+         );
+
+        $cliente = curl_init();
+        curl_setopt($cliente, CURLOPT_URL, $URL_order_TN);
+        curl_setopt($cliente, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($cliente, CURLOPT_HEADER, false);
+        curl_setopt($cliente, CURLOPT_HTTPHEADER, $headers_req);
+        curl_setopt($cliente, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($cliente);
+        
+        curl_close($cliente);
+    
+        //print_r($result);
+    
+        $datos = $result; //json_decode($result,true);
+        if ($result === false) {
+            $datos = curl_error($cliente);
+        }
+        
+        return $datos;
+    }
+    
     //////////////////////////////////////////////////////////// modificada
     
     public function info_user($id_client,$APP_ID,$SECRET_KEY) {
@@ -571,6 +604,65 @@ class MELIService
         $delivery[0] = $shipping_res['status_history']['date_first_visit'];     //'date_first_visit'
         $delivery[1] = $shipping_res['status_history']['date_delivered'];       //'date_delivered'
         $delivery[2] = $shipping_res['status_history']['date_not_delivered'];    //'date_not_delivered'
+    
+        $ship_mat = [$shipping, $address, $receiver_per, $shipping_items, $delivery];
+        
+        //////////////////////////////////////
+        //dd($ship_mat);
+        return $ship_mat;
+    }
+
+    //////////////////////////////////////////////////////
+    public function print_answer_TN ($user_id,$access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order) {
+        $shipping = $this -> info_shipping_TN($user_id,$access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order);
+    
+        $hash_code = 'vacio';
+    
+        $matriz_QR = [];
+        $matriz_QR['id']= $id_order;
+        $matriz_QR['sender_id']= $user_id;   
+        $matriz_QR['hash_code']= $hash_code;  
+        $matriz_QR['security_digit']= 0;
+    
+        $sticker = json_encode($matriz_QR);
+    
+        //////////////////////////////////////
+        $shipping_res = json_decode($shipping,true);
+        //dd($shipping_res);
+        
+        $shipping = [];
+        $shipping[0] = $id_order;                   //'id_ship'
+        $shipping[1] = new \DateTime();             //'date_in'
+        $shipping[2] = $shipping_res['shipping_status'];     //'status'
+        $shipping[3] = $user_id;                    //'sender_id'
+        $shipping[4] = $id_order;                   //'order_id'
+        $shipping[5] = $sticker;                      //'Etiqueta'
+        
+        $address = [];
+        $address[0] = $shipping_res['shipping_address']['name'];               //'street_name'
+        $address[1] = $shipping_res['shipping_address']['number'];             //'street_number'
+        $address[2] = $shipping_res['shipping_address']['customs'];            //'comment'
+        $address[3] = $shipping_res['shipping_address']['zipcode'];            //'zip_code'
+        $address[4] = $shipping_res['shipping_address']['city'];               //'city'
+        $address[5] = $shipping_res['shipping_address']['province'];           //'state'
+        $address[6] = $shipping_res['shipping_address']['country'];            //'country'
+        $address[7] = null;                                                    //'latitude'
+        $address[8] = null;                                                    //'longitude'
+        $address[9] = null;    //'geolocation_last_updated'
+        $address[10] = $shipping_res['shipping_address']['address'];        //'delivery_preference'
+    
+        $receiver_per = [];
+        $receiver_per[0] = $shipping_res['customer']['name'];      //'receiver_name'
+        $receiver_per[1] = $shipping_res['customer']['phone'];      //'receiver_phone'
+        
+        $shipping_items = [];
+        $shipping_items[0] = $shipping_res['products'][0]['name'];          //'description'
+        $shipping_items[1] = $shipping_res['products'][0]['weight'];            //'dimensions' Se sustituyó por el peso
+        
+        $delivery = [];
+        $delivery[0] = null;     //'date_first_visit'
+        $delivery[1] = null;       //'date_delivered'
+        $delivery[2] = null;    //'date_not_delivered'
     
         $ship_mat = [$shipping, $address, $receiver_per, $shipping_items, $delivery];
         

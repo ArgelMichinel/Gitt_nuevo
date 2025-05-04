@@ -80,6 +80,8 @@ class ControllerPackets extends Controller
 
     public function mostrarUpdate() {
 
+        $title='Actualizar Paquetes';
+
         $shipnum = request()->input('shipnum');
 
         if ($shipnum) {

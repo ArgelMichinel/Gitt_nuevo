@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\access_nube;
 use App\Models\clientes;
 use App\Services\MELIService;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class infoPackMeliController extends Controller
                 //if ($i == 2) dd('Tabla cliente ' . $clientes[$i]->id_MELI . ' SenderID ' . $sender_id );
                 
                 if ($sender_id == $clientes[$i]->id_MELI) {  //Metodos que se aplican si el envío es MELI
-                    $sender_id = (int) $sender_id;
+                    
                     $APP_ID = env('APP_ID');
                     $SECRET_KEY = env('SECRET_KEY');
                     $client_info = $this -> MELIService -> checkValdTok($sender_id,$APP_ID,$SECRET_KEY);
@@ -49,10 +50,15 @@ class infoPackMeliController extends Controller
                     break;
                 }
                 if ($sender_id == $clientes[$i]->id_TN) {  //Metodos que se aplican si el envío es TN
-                    /*
-                    *
-                    *
-                    */
+                    
+                    $user_id = $sender_id;
+                    $cliente = access_nube::where('user_id','=',$user_id)->first();
+                    $id_order = $shipnum;
+
+                    $$NOMBRE_CARRIER_TN = env('$NOMBRE_CARRIER_TN');
+                    $CONTACT_APP_TN = env('CONTACT_APP_TN');
+                    $ship_mat = $this -> MELIService -> print_answer_TN ($user_id,$cliente['access_tok'],$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order);
+                    
                     break;
                 }
 
@@ -91,10 +97,15 @@ class infoPackMeliController extends Controller
                 break;
             }
             if ($sender_id == $clientes[$i]->id_TN) {  //Metodos que se aplican si el envío es TN
-                /*
-                *
-                *
-                */
+                
+                $user_id = $sender_id;
+                $cliente = access_nube::where('user_id','=',$user_id)->first();
+                $id_order = $shipnum;
+                
+                $$NOMBRE_CARRIER_TN = env('$NOMBRE_CARRIER_TN');
+                $CONTACT_APP_TN = env('CONTACT_APP_TN');
+                $ship_mat = $this -> MELIService -> print_answer_TN ($user_id,$cliente['access_tok'],$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order);
+            
                 break;
             }
 
