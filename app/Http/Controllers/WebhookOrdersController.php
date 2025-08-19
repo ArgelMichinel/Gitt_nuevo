@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\access_nube;
 use App\Models\clientes;
 use Illuminate\Http\Request;
 use App\Services\MELIService;
@@ -18,15 +19,14 @@ class WebhookOrdersController extends Controller
 
     public function recibirOrden(Request $request) {
         
-        if (request()->header('User-Agent') !== 'Tiendanube Webhooks' ) {
-            abort(403, 'Unauthorized');
-        }
+        $title = "Envio de encomiendas a logística";
 
         $data = request()->input();
         //dd($data);
         // verificación de que la tienda que solicita está integrada
         //$data = json_decode($data,true);
-        $cliente = clientes::where('id_TN','=',$data['store'])->first();
+        $cliente = access_nube::where('user_id','=',$data['store'])->first();
+        //dd($cliente);
 
         if ( !$cliente ) {
             abort(403, 'Tienda no integrada');
@@ -34,7 +34,7 @@ class WebhookOrdersController extends Controller
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////// Instrucciones para poder sacar el valor de los ids por tener el mismo identificador en la query                // 
-        $rawQuery = $_SERVER['REQUEST_URI']; // Ej: /webhook/notify_orders?locale=es&store=5755375&id=128158567&id=127034942                    //
+        /* $rawQuery = $_SERVER['REQUEST_URI']; // Ej: /webhook/notify_orders?locale=es&store=5755375&id=128158567&id=127034942                    //
         $parsedUrl = parse_url($rawQuery);                                                                                                      //
         $queryString = $parsedUrl['query'] ?? '';                                                                                               //
                                                                                                                                                 //
@@ -53,19 +53,23 @@ class WebhookOrdersController extends Controller
             if ($key === 'id') {                                                                                                                //
                 $ids[] = $value;                                                                                                                //
             }                                                                                                                                   //
-        }                                                                                                                                       //
+        }           */                                                                                                                             //
                                                                                                                                                 //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         $NOMBRE_CARRIER_TN = env('$NOMBRE_CARRIER_TN');
         $CONTACT_APP_TN = env('CONTACT_APP_TN');
 
+        $ids = $data['id'];
+
         $num = count($ids);
+        $detalle = "";
+        $repetidos = 0;
 
         for ($i=0; $i < $num; $i++) { 
 
             $data = $this -> MELIService -> print_answer_TN ($cliente['user_id'],$cliente['access_tok'],$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$ids[$i]);
-            usleep(1000000);
+            //usleep(1000000);
 
             # codigo de savePackController
             switch ($data[1][6]) {
@@ -140,9 +144,16 @@ class WebhookOrdersController extends Controller
             $colum['admin_ingre'] = (int)Auth::id();
             $colum['sticker'] = $data[0][5];
             
-            $this->MELIService->insert_pack($colum);
+            try {
+                $this->MELIService->insert_pack($colum);
+                $detalle = $detalle . $ids[$i] . PHP_EOL;
+
+            } catch (\Throwable $th) {
+                $repetidos = $repetidos + 1;
+            }
 
         }
-        return var_dump($ids);
+
+        return view('received_orders_success',compact('title','num','detalle', 'repetidos'));
     }
 }

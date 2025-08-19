@@ -13,7 +13,7 @@
     <script type="text/javascript" language="javascript" src="{{ asset('JS/vfs_fonts.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.html5.min.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.print.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="{{ asset('JS/update_packets7.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/update_packets8.js') }}"></script>
     <script type="text/javascript" class="init">
         $(document).ready(function() {
             var table = $('#example').DataTable( {

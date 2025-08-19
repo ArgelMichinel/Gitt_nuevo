@@ -28,7 +28,8 @@ class automController extends Controller
         $dia_manana->modify('+1 day');
         $parameters['end_date'] = $dia_manana;
 
-        //$envios_query = DB::table('envios');
+        /* echo("Prueba" );
+        return; */
 
         $envios = envios::where('date_in', '>=', $parameters['begin_date']) 
                     -> where('date_in', '<', $parameters['end_date'])
@@ -36,10 +37,11 @@ class automController extends Controller
                     ->get()->toArray();
 
         $numero = count($envios);
+        //$numero = 1;
 
         $clientes = clientes::all();
 
-        for ($j=0; $j < count($envios); $j++) { 
+        for ($j=0; $j < $numero; $j++) { 
 
             $sticker = $envios[$j]['sticker'];
 
@@ -68,26 +70,51 @@ class automController extends Controller
             }
 
             $packets = envios::find($envios[$j]['id_num']);
+            
+            //return print_r($packets);
 
             if ($ship_mat[4][0]==NULL) {
                 $f_first_visita = NULL;
             } else {
-                $f_first_visita = new \DateTime(substr($ship_mat[4][0], 0, 19));
-                $f_first_visita->modify('+1 hours');
+                try {
+                    $f_first_visita = new \DateTime(substr($ship_mat[4][0], 0, 18));
+                    $f_first_visita->modify('+1 hours');
+                    $f_first_visita = $f_first_visita->format('Y-m-d H:i:s');
+                } catch (\Throwable $th) {
+                    $f_first_visita = "Error";
+                    echo("Hubo error al actualizar f_first_visita." );
+                }
             }
+            //return var_dump($f_first_visita);
     
             if ($ship_mat[4][1]==NULL) {
                 $f_delivered = NULL;
             } else {
-                $f_delivered = new \DateTime(substr($ship_mat[4][1], 0, 19));
-                $f_delivered->modify('+1 hours');
+                try {
+                    $f_delivered = new \DateTime(substr($ship_mat[4][1], 0, 18));
+                    $f_delivered->modify('+1 hours');
+                    $f_delivered = $f_delivered->format('Y-m-d H:i:s');
+                } catch (\Throwable $th) {
+                    $f_delivered = "Error";
+                    echo("Hubo error al actualizar f_delivered." );
+                }
             }
+
+            //return var_dump($f_delivered);
     
             if ($ship_mat[4][2]==NULL) {
                 $f_not_delivered = NULL;
             } else {
-                $f_not_delivered = new \DateTime(substr($ship_mat[4][2], 0, 19));
+                try {
+                    $f_not_delivered = new \DateTime(substr($ship_mat[4][2], 0, 18));
+                    $f_not_delivered = $f_not_delivered->format('Y-m-d H:i:s');
+                } catch (\Throwable $th) {
+                    $f_not_delivered = "Error";
+                    echo("Hubo error al actualizar f_not_delivered." );
+                }
             }
+
+            //return var_dump($f_not_delivered);
 
             $packets->status = $ship_mat[0][2];
             $packets->street_name = $ship_mat[1][0];
@@ -95,8 +122,12 @@ class automController extends Controller
             $packets->date_delivered = $f_delivered;
             $packets->date_not_delivered = $f_not_delivered;
 
+            //return var_dump($packets->status);
+            //return var_dump($packets->date_not_delivered);
+
             $packets->save();
 
+            //return var_dump($packets);
 
         }
 

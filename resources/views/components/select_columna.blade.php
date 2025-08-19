@@ -4,11 +4,10 @@
         <div class="row">
 
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-                <div class="custom-control custom-switch">
-                    <span class="slider"></span>
-                    <input type="checkbox" class="custom-control-input switch" id="date_in" onclick="$('#num_venta1').click(); $('#comentario1').click(); $('#cod_postal1').click(); $('#prov1').click(); $('#pais1').click(); $('#descrip1').click();  $('#f_no_entre1').click(); $('#sta_log1').click(); $('#com_log1').click();">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="filtro_basico" onclick="$('#num_venta1').click(); $('#comentario1').click(); $('#cod_postal1').click(); $('#prov1').click(); $('#pais1').click(); $('#descrip1').click();  $('#f_no_entre1').click(); $('#sta_log1').click(); $('#com_log1').click();">
+                    <label class="form-check-label" for="filtro_basico">Básico</label>
                     <input type="checkbox" class="switch-1" id="date_in1" checked data-column="2" style="display: none;">
-                    <label class="custom-control-label" for="date_in">Básico</label>
                 </div>
             </div>
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
@@ -27,9 +26,8 @@
                     <input type="checkbox" class="switch-1" id="pri_visi1" checked data-column="16" style="display: none;">
                     <input type="checkbox" class="switch-1" id="fec_ent1" checked data-column="17" style="display: none;">
                     <input type="checkbox" class="switch-1" id="f_no_entre1" checked data-column="18" style="display: none;">
-                    <input type="checkbox" class="switch-1" id="cadete1" checked data-column="19" style="display: none;">
-                    <input type="checkbox" class="switch-1" id="sta_log1" checked data-column="20" style="display: none;">
-                    <input type="checkbox" class="switch-1" id="com_log1" checked data-column="21" style="display: none;">
+                    {{-- <input type="checkbox" class="switch-1" id="sta_log1" checked data-column="29" style="display: none;"> --}}
+                    <input type="checkbox" class="switch-1" id="com_log1" checked data-column="30" style="display: none;">
                 </div>
             </div>
 

@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="{{ asset('Styles/SN-styles.css') }}">
 <link rel="stylesheet" href="{{ asset('Styles/Footer-styles.css') }}">
 <!Estilo agregado para poder alinear div facilmente. Se usa con ul class="nav justify-content-end">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ asset('Styles/bootstrap2.min.css') }}">
 <!Estilo agregado para el icono del menu">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!Estilos de letras>
@@ -40,7 +40,7 @@
     @endauth
 
     @auth('clientes')
-        <x-header3 :title="$title"></x-header3>
+        <x-header3 :title="$title" :dat_user="$dat_user"></x-header3>
     @endauth
 
     @auth('administ')

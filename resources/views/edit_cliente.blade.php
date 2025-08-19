@@ -39,9 +39,12 @@
             <tr>
                 <th>Select</th>
                 <th># cliente</th>
+                <th>id MELI</th>
+                <th>id TNube</th>
                 <th>nombre</th>
                 <th>email</th>
                 <th>Borrar</th>
+                <th>Editar</th>
             </tr>
             
         </thead>
@@ -52,10 +55,14 @@
                     <td style="text-align: center;"><i class="fa fa-user-circle-o" aria-hidden="true" title="ver cliente"
 					aria-label="ver cliente"></i></td>
                     <td>{{ $clientes[$i]['id'] }}</td>
+                    <td>{{ $clientes[$i]['id_MELI'] }}</td>
+                    <td>{{ $clientes[$i]['id_TN'] }}</td>
                     <td>{{ $clientes[$i]['name'] }}</td>
                     <td>{{ $clientes[$i]['email'] }}</td>
-                    <td style="text-align: center; color: black;"><i class="fa fa-trash" aria-hidden="true" title="Eliminar admin."
-					aria-label="Eliminar admin."></i></td>
+                    <td style="text-align: center; color: black;"><i class="fa fa-trash" aria-hidden="true" title="Eliminar cliente."
+					aria-label="Eliminar cliente"></i></td>
+                    <td style="text-align: center;"><a href="{{ route('name_client', ['id' => $clientes[$i]['id']]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar cliente"
+                        aria-label="Editar cliente"></i></a></td>
                 </tr>
             @endfor
                 
@@ -63,11 +70,14 @@
         <tfoot>
             
             <tr>
-            <th>Select</th>
+                <th>Select</th>
                 <th># cliente</th>
+                <th>id MELI</th>
+                <th>id TNube</th>
                 <th>normbre</th>
                 <th>email</th>
                 <th>Borrar</th>
+                <th>Editar</th>
             </tr>
             
         </tfoot>

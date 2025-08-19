@@ -24,6 +24,8 @@ class ClientesPackController extends Controller
         $new_query['incl_client'] = true;
         $new_query['incl_date'] = True; */
         $dat_user = Auth::user();
+
+        //dd($dat_user);
         
         $var = request()->input('new_query');
         $new_query = $var;
@@ -47,7 +49,7 @@ class ClientesPackController extends Controller
 
         //dd($packets);
         
-        return view('query_packets_client',compact('title', 'packets'));
+        return view('query_packets_client',compact('title','dat_user', 'packets'));
         
     }
 }

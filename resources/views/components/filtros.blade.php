@@ -74,6 +74,15 @@
                             <th style="width=auto;"><input type="checkbox" class="Checkbox-filter" name="new_query[incl_ayer]" value="true">Día de ayer </th>
                         </tr>
                         {{-- <!*******************> --}}
+                        <tr>
+                            <th style="width=auto;"><input type="checkbox" class="Checkbox-filter" onclick="activ_filter()" name="new_query[incl_assign_date]" value="true">Fecha asign.: </th>
+                            <th style="display:none">
+                                <label for="begin_date_assign">Inicio =></label>
+                                <input type="date" id="begin_date_assign" name="new_query[begin_date_assign]">
+                                <label for="end_date_assign">Final =></label>
+                                <input type="date" id="end_date_assign" name="new_query[end_date_assign]">
+                            </th>
+                        </tr>
                     </table>
                     
                 </div>

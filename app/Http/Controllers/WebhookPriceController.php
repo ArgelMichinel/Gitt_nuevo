@@ -27,7 +27,11 @@ class WebhookPriceController extends Controller
             abort(403, 'Tienda no integrada');
         }
 
-        $zona = table_price::where('codigos', 'like', '%' . $data['destination']['postal_code'] . '%')->first()->toArray();
+        if ((int)$data['destination']['postal_code'] <= 1500) {
+            $zona = table_price::where('id',1)->first()->toArray();
+        } else {
+            $zona = table_price::where('codigos', 'like', '%' . $data['destination']['postal_code'] . '%')->first()->toArray();
+        }
 
         //return var_dump($zona); //json_encode($cliente);
 
@@ -47,8 +51,8 @@ class WebhookPriceController extends Controller
                     "type" => "ship",
                     "min_delivery_date" => $fec_min_entrega->format('Y-m-d\TH:i:sO'),  //"min_delivery_date": "2016-07-14T14:48:45-0300","2025-05-03T03:55:20+0000"
                     "max_delivery_date" => $fec_max_entrega->format('Y-m-d\TH:i:sO'),  //"max_delivery_date": "2016-07-17T14:48:45-0300",
-                    "phone_required" => true,
-                    "reference" => $data['carrier']['id']
+                    "phone_required" => true //,
+                    //"reference" => $data['carrier']['id']
                 ]
             ]
         ];

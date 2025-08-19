@@ -37,8 +37,10 @@ Route::post('integracion/MELI', [IntegracionController::class,'IntegrarMELI_resp
 Route::get('integracion/NUBE', [IntegracionController::class,'descarga_manual'])->name('integrar_NUBE');
 Route::get('integracion/NUBE_autoriz', [IntegracionController::class,'integrarTiendaNube'])->name('NUBE_autoriz');
 Route::post('integracion/NUBE_autoriz', [IntegracionController::class,'IntegrarNube_respu']);
+//Route::get('integracion/hatty', [IntegracionController::class,'hatty']);
 Route::get('/admin/logged_packets',[ControllerPackets::class,'mostrarenvios'])->middleware('auth:administ')->name('mostrarenvios');
 Route::post('/admin/logged_packets',[ControllerPackets::class,'crearlista'])->middleware('auth:administ'); 
+Route::post('/admin/logged_packets/update_TN',[ControllerPackets::class,'update_TN'])->middleware('auth:administ');
 Route::get('/admin/assign_packets',[ControllerAsignar::class,'ingresoGet'])->middleware('auth:administ')->name('asignar');
 Route::post('/admin/assign_packets',[ControllerAsignar::class,'AsignarPost'])->middleware('auth:administ');
 Route::get('/admin/QRgenerator/{tag}',[Controller_QRgenerator::class, 'generarQR'])->middleware('auth:administ')->name('Genera_QR');
@@ -57,6 +59,8 @@ Route::post('/admin/show_list',[editListController::class,'delet_lista'])->middl
 Route::get('/admin/include_packets',[ControllerPackets::class,'include_packets'])->middleware('auth:administ')->name('incluirEnvio');
 Route::get('/admin/edit_client',[editClienteController::class,'mostrar'])->middleware('auth:administ')->name('infoCliente');
 Route::post('/admin/edit_client',[editClienteController::class,'delet_client'])->middleware('auth:administ');
+Route::get('/admin/name_client',[editClienteController::class,'planilla_cliente'])->middleware('auth:administ')->name('name_client');
+Route::post('/admin/name_client',[editClienteController::class,'ActualizarCliente'])->middleware('auth:administ');
 Route::get('/admin/info_packets/',[infoPackMeliController::class,'info_packets_get'])->middleware('auth:administ')->name('info_packets');
 Route::post('/admin/info_packets/',[infoPackMeliController::class,'info_packets_post'])->middleware('auth:administ');
 Route::get('/admin/update_packets',[ControllerPackets::class,'mostrarUpdate'])->middleware('auth:administ')->name('mostrarUpdate');
@@ -67,8 +71,7 @@ Route::get('/admin/price_packets',[ControllerPrice::class,'mostrarPrecios'])->mi
 Route::post('/admin/price_packets',[ControllerPrice::class,'actualizarPrecios'])->middleware('auth:administ');
 Route::get('/clientes/logged_packets',[ClientesPackController::class,'mostrarenvios'])->middleware('auth:clientes')->name('mostrarenvios_cientes');
 Route::get('/clientes/grant_permission',[IntegracionController::class,'otorgarPermiso'])->middleware('auth:clientes')->name('grant_permission');
-//Route::post('/admin/prueba',[savePackController::class,'prueba'])->middleware('auth:administ'); 
-//Route::get('/admin/prueba',[savePackController::class,'prueba'])->middleware('auth:administ'); 
+//Route::get('/admin/prueba',[infoPackMeliController::class,'ruta_prueba'])->middleware('auth:administ'); 
 //Route::get('/admin/prueba_actua',[savePackController::class,'prueba_actua'])->middleware('auth:administ'); 
 Route::get('/lkdmflksdflkewfl7d/kdmmdf7d5',[automController::class,'automatico']);
 Route::post('/webhook/price',[WebhookPriceController::class,'RetrivePrice']);

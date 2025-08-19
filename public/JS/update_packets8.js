@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function ()    {
         
         //alert(selec_QR);
         let foo = prompt('Copia el QR',selec_QR);
-        window.open('QRgenerator.php?id=' + selec_QR);
+        window.open('QRgenerator/' + btoa(encodeURIComponent(selec_QR))); // Se codificó a base64 para poderlo pasar sin problema por la URL
         });
         
     }});

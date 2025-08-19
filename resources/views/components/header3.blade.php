@@ -1,4 +1,4 @@
-@props(['title'])
+@props(['title', 'dat_user'])
 <header>
 	<div id="header" class="header">
         <div id="encabezado">
@@ -24,11 +24,18 @@
     <h2><?=$title?></h2>
     
     <div class="topnav" id="myTopnav">
+        @if (!$dat_user['id_MELI'])
+            <a class="underH" href="{{ route('integrar_MELI')}}">Agregar integración con MELI</a>
+        @endif
+        
+        @if (!$dat_user['id_TN'])
+            <a class="underH" href="{{ route('integrar_NUBE')}}">Agregar integración con TN</a>
+        @endif
+        
+        <a class="underH" href="{{ route('logout')}}">Logout</a>
 
-            <a class="underH" href="{{ route('logout')}}">Logout</a>
-
-            <a href="javascript:void(0);" class="icon" onclick="FunctionTopnav()">
-            <i id="i-menu" class="fa fa-bars"></i>
-            </a>
+        <a href="javascript:void(0);" class="icon" onclick="FunctionTopnav()">
+        <i id="i-menu" class="fa fa-bars"></i>
+        </a>
     </div>
 </div>

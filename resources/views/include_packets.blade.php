@@ -3,7 +3,7 @@
 @section('inc_head')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script type="text/javascript" src="{{ asset('JS/instascan.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('JS/prepare_QRdata10.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('JS/prepare_QRdata15.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('Styles/incl_packets.css') }}">
 @endsection
 

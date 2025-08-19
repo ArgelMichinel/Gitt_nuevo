@@ -30,6 +30,8 @@ var mat_ship = [];
 var ind = 0;
 var delet = [];
 var num_pack = 0;
+var audio = document.getElementById("audio_scan");
+var audiomalo = document.getElementById("trompeta");
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("num_pack").innerHTML = num_pack;
 });
@@ -48,10 +50,17 @@ function request_data(sender_id, shipnum, content) {
           
           //console.log(decodeURIComponent( Ajax.responseText));
           mat_ship = JSON.parse( decodeURIComponent( Ajax.responseText) );
+
+          if (typeof mat_ship[0][2] == 'undefined') {
+            audiomalo.play();
+          }
+
           submit_array();
         }
 
     }
+
+    content = btoa(encodeURIComponent(content));
 
     Ajax.open("GET","./info_packets?sender_id="+sender_id+"&shipnum="+shipnum+"&sticker="+content,true);
 
@@ -121,6 +130,7 @@ function submit_array() {
                 audio.play();
                 print_page(mat_ship);
             } else {
+                console.log(Ajax.responseText);
                 audiomalo.play();
             }
             

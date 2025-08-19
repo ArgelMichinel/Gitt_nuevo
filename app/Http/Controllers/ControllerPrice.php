@@ -33,6 +33,6 @@ class ControllerPrice extends Controller
             $precio->save();
         }
 
-        return view('success_prices','title');
+        return view('success_prices',compact('title'));
     }
 }

@@ -3,7 +3,7 @@
 @section('inc_head')
     <link rel="stylesheet" href="{{ asset('Styles/assign_packets.css') }}">
     <script type="text/javascript" language="javascript" src="{{ asset('JS/instascan.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="{{ asset('JS/assign_packets.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/assign_packets2.js') }}"></script>
 @endsection
 
 @section('output')

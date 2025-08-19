@@ -37,6 +37,7 @@ class MELIService
 
     public function info_shipping_TN($user_id,$access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_order) {
 
+        //dd($access_tok);
         $URL_order_TN = "https://api.tiendanube.com/2025-03/". $user_id . "/orders/". $id_order;
         
         $headers_req =array(
@@ -350,13 +351,9 @@ class MELIService
     
     /////////////////////////////////////////////////////// modificada
     
-    public function insert_by_lots ($fields) {
+    public function insert_by_lots ($table, $fields) {
         
-        $n_pack = count($fields);
-
-        for ($i=0; $i < $n_pack; $i++) { 
-            $this->insert_pack($fields[$i]);
-        }
+        DB::table($table)->insert($fields);
         
     }
     
@@ -481,6 +478,11 @@ class MELIService
             $envios -> where('delivery_preference', 1);
                 
         }
+        if (isset($parameters['incl_assign_date'])) {
+                if (isset($parameters['begin_date_assign']) && isset($parameters['end_date_assign'])) {
+                    $envios -> where('time_cad1', '>=', $parameters['begin_date_assign']) -> where('time_cad1', '<', $parameters['end_date_assign']);
+                }
+        } 
         if (isset($parameters['incl_client'])) {
             $envios2 = clone $envios;
             $id_MELI = clientes::where('id','=',$parameters['client'])->first()->id_MELI;
@@ -544,7 +546,8 @@ class MELIService
             $selec-> time_cad2 = $selec-> time_cad1;
             $selec-> admin_cad2 = $selec-> admin_cad1;
             $selec-> cadete1 = $fields[$i]['cadete1'];
-            $selec-> time_cad1 = now();
+            $selec-> time_cad1 = new \DateTime();
+            $selec-> time_cad1->modify('-3 hours');
             $selec-> admin_cad1 = $fields[$i]['admin_cad1'];
             /////////////////////////////////////////////////
             $selec -> save();
@@ -590,7 +593,11 @@ class MELIService
         $address[7] = $shipping_res['receiver_address']['latitude'];           //'latitude'
         $address[8] = $shipping_res['receiver_address']['longitude'];          //'longitude'
         $address[9] = $shipping_res['receiver_address']['geolocation_last_updated'];    //'geolocation_last_updated'
-        $address[10] = $shipping_res['receiver_address']['delivery_preference'];        //'delivery_preference'
+        try {
+            $address[10] = $shipping_res['receiver_address']['delivery_preference'];        //'delivery_preference'
+        } catch (\Throwable $th) {
+            $address[10] = 0;
+        }
     
         $receiver_per = [];
         $receiver_per[0] = $shipping_res['receiver_address']['receiver_name'];      //'receiver_name'
@@ -639,9 +646,9 @@ class MELIService
         $shipping[5] = $sticker;                      //'Etiqueta'
         
         $address = [];
-        $address[0] = $shipping_res['shipping_address']['name'];               //'street_name'
+        $address[0] = $shipping_res['shipping_address']['address'];               //'street_name'
         $address[1] = $shipping_res['shipping_address']['number'];             //'street_number'
-        $address[2] = $shipping_res['shipping_address']['customs'];            //'comment'
+        $address[2] = "Piso " . $shipping_res['shipping_address']['floor'] . ", " . $shipping_res['shipping_address']['customs'];            //'comment'
         $address[3] = $shipping_res['shipping_address']['zipcode'];            //'zip_code'
         $address[4] = $shipping_res['shipping_address']['city'];               //'city'
         $address[5] = $shipping_res['shipping_address']['province'];           //'state'
@@ -649,7 +656,11 @@ class MELIService
         $address[7] = null;                                                    //'latitude'
         $address[8] = null;                                                    //'longitude'
         $address[9] = null;    //'geolocation_last_updated'
-        $address[10] = $shipping_res['shipping_address']['address'];        //'delivery_preference'
+        try {
+            $address[10] = $shipping_res['receiver_address']['delivery_preference'];        //'delivery_preference'
+        } catch (\Throwable $th) {
+            $address[10] = 0;
+        }
     
         $receiver_per = [];
         $receiver_per[0] = $shipping_res['customer']['name'];      //'receiver_name'

@@ -11,6 +11,7 @@ use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
 
 class IntegracionController extends Controller
 {
@@ -38,11 +39,41 @@ class IntegracionController extends Controller
             $datos = $this -> MELIService -> request_tok($code,$state,env('APP_ID'),env('SECRET_KEY'),env('URL'));
             //dd($datos);
 
-            $registro = access_meli::where('user_id','=',$datos["user_id"])->get();
-            
-            $title='Registro de usuario';
+            if (auth('clientes')->check()) {        // Pasos para clientes ya registrados con Tienda Nube que están agregando a MELI
 
-            return view('curl',compact('registro','title','datos'));
+                $dat_user = auth('clientes')->user();
+
+                //dd($dat_user);
+
+                $usuario_meli = new access_meli();
+                $usuario_meli-> id = $dat_user["id"];
+                $usuario_meli-> user_id = $datos["user_id"];
+                $usuario_meli-> access_tok = $datos["access_token"];
+                $usuario_meli-> refresh_tok = $datos["refresh_token"];
+                $usuario_meli-> fec_hora = Carbon::now();
+                $usuario_meli-> Nombre = $dat_user["name"];
+
+                $usuario_meli->save();
+
+                $cliente = clientes::where('id','=',$dat_user["id"])->get()->first();
+
+                $cliente-> id_MELI = $datos["user_id"];
+                $cliente->save();
+
+                $mensaje = 'Se actualizó usuario existente';
+                $title='Actualización de usuario';
+
+                return view('integracion_success',compact('title','mensaje','dat_user'));
+
+            } else {        // Pasos para clientes que se estén registrando por primera vez
+                
+                $registro = access_meli::where('user_id','=',$datos["user_id"])->get();
+
+                $title='Registro de usuario';
+
+                return view('curl',compact('registro','title','datos'));
+            }
+            
 
         } else {
 
@@ -119,7 +150,7 @@ class IntegracionController extends Controller
             $usuario_meli->save();
 
             if (isset($errores)) {
-                return view('integracion_success',compact('title','errores','mensaje','num_errores'));
+                return view('curl',compact('title','errores','mensaje','num_errores'));
             }
 
             return view('integracion_success',compact('title','mensaje','num_errores'));
@@ -151,11 +182,40 @@ class IntegracionController extends Controller
             $datos = json_decode($datos, true);
             //var_dump($datos);
 
-            $registro = access_nube::where('user_id','=',$datos["user_id"])->get();
-            
-            $title='Registro de usuario';
+            if (auth('clientes')->check()) {        // Pasos para clientes ya registrados con MELI que están agregando a Tienda Nube
 
-            return view('curl_TN',compact('registro','title','datos'));
+                $dat_user = auth('clientes')->user();
+
+                $usuario_nube = new access_nube();
+                $usuario_nube-> id = $dat_user["id"];
+                $usuario_nube-> user_id = $datos["user_id"];
+                $usuario_nube-> access_tok = $datos['access_token'];
+                $usuario_nube-> fec_hora = new \DateTime();
+                $usuario_nube-> fec_hora =$usuario_nube-> fec_hora->format('Y-m-d H:i:s');
+                //$usuario_nube-> fec_hora = Carbon::now();
+                $usuario_nube-> Nombre = $dat_user["name"];
+                $usuario_nube-> alcance = $datos['scope'];
+
+                $usuario_nube->save();
+
+                $cliente = clientes::where('id','=',$dat_user["id"])->get()->first();
+
+                $cliente-> id_TN = $datos["user_id"];
+                $cliente->save();
+
+                $mensaje = 'Se actualizó usuario existente';
+                $title='Actualización de usuario';
+
+                return view('integracion_success',compact('title','mensaje','dat_user'));
+
+            } else {        // Pasos para clientes que se estén registrando por primera vez
+                
+                $registro = access_nube::where('user_id','=',$datos["user_id"])->get();
+
+                $title='Registro de usuario';
+
+                return view('curl_TN',compact('registro','title','datos'));
+            }
 
         } else {
             return redirect(route('integrar_NUBE'));
@@ -199,7 +259,9 @@ class IntegracionController extends Controller
             $usuario->password = $new_user["password"];
             $usuario->remember_token = Str::random(60);
             $usuario->created_at = new \DateTime();
+            $usuario->created_at = $usuario->created_at->format('Y-m-d H:i:s');
             $usuario->updated_at = new \DateTime();
+            $usuario->updated_at = $usuario->updated_at->format('Y-m-d H:i:s');
             $usuario->id_TN = $new_user["user_id"];
 
             $usuario->save();
@@ -221,7 +283,9 @@ class IntegracionController extends Controller
             $usuario_nube-> id = $usuario["id"];
             $usuario_nube-> user_id = $new_user["user_id"];
             $usuario_nube-> access_tok = $new_user["access_tok"];
-            $usuario_nube-> fec_hora = Carbon::now();
+            $usuario_nube-> fec_hora = new \DateTime();
+            $usuario_nube-> fec_hora =$usuario_nube-> fec_hora->format('Y-m-d H:i:s');
+            //$usuario_nube-> fec_hora = Carbon::now();
             $usuario_nube-> Nombre = $Nombre_nube;
             $usuario_nube-> alcance = $new_user["alcance"];
 
@@ -264,5 +328,49 @@ class IntegracionController extends Controller
         $filePath = storage_path('app/public/Instalacion_app_Tienda_nube.pdf');
         return Response::download($filePath, 'Instalacion_app_Tienda_nube.pdf');
     } 
+
+    /* public function hatty () {
+
+        $usuario_nube = access_nube::where('user_id','=',5372388)->get()->first();
+        
+        if (0 == 0) {
+
+            $usuario_nube = access_nube::where('user_id','=',5372388)->get()->first();
+            //dd($usuario_nube);
+
+            $NOMBRE_CARRIER_TN = env('NOMBRE_CARRIER_TN');
+            $WEBHOOK_PRECIOS = env('WEBHOOK_PRECIOS');
+            $CONTACT_APP_TN = env('CONTACT_APP_TN');
+
+            $respu_crear_carrier = $this -> MELIService ->Crear_carrier_TN($usuario_nube-> user_id,$usuario_nube-> access_tok,$NOMBRE_CARRIER_TN,$WEBHOOK_PRECIOS,$CONTACT_APP_TN);
+            $respu_crear_carrier = json_decode($respu_crear_carrier,true);
+            
+            if (!isset($respu_crear_carrier['name'])) {         //Se ejecuta si ocurre un error al crear el carrier
+                var_dump("Ha ocurrido un problema");
+                dd($respu_crear_carrier);
+            }
+
+            $id_carrier = $respu_crear_carrier['id'];
+            //dd($respu_crear_carrier);
+            $respu_opc_carrier = $this -> MELIService ->Crear_carrier_opt_TN($usuario_nube-> user_id,$usuario_nube-> access_tok,$NOMBRE_CARRIER_TN,$CONTACT_APP_TN,$id_carrier);
+            $respu_opc_carrier = json_decode($respu_opc_carrier,true);
+
+            if (!isset($respu_opc_carrier['name'])) {         //Se ejecuta si ocurre un error al crear la opción del carrier
+                var_dump("Ha ocurrido un problema");
+                dd($respu_opc_carrier);
+            }
+            //dd($respu_opc_carrier);
+            $title='Hatty';
+            $mensaje='Registrado Hatty';
+            $num_errores=0;
+
+            if (isset($errores)) {
+                return view('integracion_success',compact('title','errores','mensaje','num_errores'));
+            }
+
+            return view('integracion_success',compact('title','mensaje','num_errores'));
+            
+        }
+    } */
 
 }

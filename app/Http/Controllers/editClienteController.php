@@ -13,6 +13,7 @@ class editClienteController extends Controller
         $title='Consultar información de clientes';
 
         $clientes = clientes::all();
+        //dd($clientes);
 
         return view('edit_cliente', compact('title', 'clientes'));
     }
@@ -22,12 +23,14 @@ class editClienteController extends Controller
         
         $cliente_eliminado = clientes::where('id','=',$del_client)->first();
         
-        if ($cliente_eliminado['id_MELI']) {        /// Elimina cliente de Mercadolibre
-            $cliente_MELI = access_meli::where('user_id','=',$cliente_eliminado['id_MELI'])->first();
+        if ($cliente_eliminado['id_MELI'] != null) {        /// Elimina cliente de Mercadolibre
+            //dd((int) $cliente_eliminado['id_MELI']);
+            $cliente_MELI = access_meli::where('user_id','=', (int) $cliente_eliminado['id_MELI'])->first();
+            //dd($cliente_MELI);
             $cliente_MELI->delete();
         }
-        if ($cliente_eliminado['id_TN']) {        /// Elimina cliente de Tienda Nube
-            $cliente_NUBE = access_nube::where('user_id','=',$cliente_eliminado['id_TN'])->first();
+        if ($cliente_eliminado['id_TN'] != null) {        /// Elimina cliente de Tienda Nube
+            $cliente_NUBE = access_nube::where('user_id','=',(int) $cliente_eliminado['id_TN'])->first();
             $cliente_NUBE->delete();
         }
         
@@ -39,5 +42,37 @@ class editClienteController extends Controller
         $clientes = clientes::all();
 
         return view('edit_cliente', compact('title', 'clientes'));
+    }
+
+    public function planilla_cliente() {
+        
+        $request = request()->input();
+
+        if (isset($request['id'])) {
+            $cliente = clientes::where('id','=',$request['id'])->first()->toArray();
+            $title='Actualizar Cliente';
+        } else {
+            redirect('infoCliente');
+        }
+
+        return view('actual_cliente', compact('title','cliente'));
+    }
+
+
+    public function ActualizarCliente() {
+        $request = request()->input();
+        
+        $cliente_formu = $request['cliente'];
+        
+        $cliente = clientes::where('id','=',$cliente_formu['id'])->first();
+        
+        $cliente->name = $cliente_formu['name'];
+
+        $cliente -> save();
+    
+        //////////////////////////////////////
+        $title='Actualización de cliente';
+        
+        return view('update_cliente_success', compact('title','cliente'));
     }
 }

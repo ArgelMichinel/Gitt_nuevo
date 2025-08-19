@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\administ;
 use App\Models\cadetes;
 use App\Models\clientes;
+use App\Models\envios;
 use App\Models\listas;
 //use App\Models\access_meli;
 use App\Services\MELIService;
@@ -44,8 +45,9 @@ class ControllerPackets extends Controller
         $title='Lista creada';
         $data = request()->all();
 
+        //return $data;
+
         //$lista_form = json_decode($data);
-        //dd($lista_form);
         $lista_name = $data['name'];
 
         $lista = new listas;
@@ -60,6 +62,8 @@ class ControllerPackets extends Controller
             $parameters[$i]['id_ship'] = $list_values[$i];
             $parameters[$i]['id_list'] = $lista['id_list'];
         }
+
+        //return var_dump(count($parameters));
         
         $this->MELIService->insert_by_lots ('listasenvios', $parameters);
 
@@ -147,6 +151,21 @@ class ControllerPackets extends Controller
         $title='Envíos Actualizados';
 
         return view('update_success',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+    }
+
+    public function update_TN()
+    {
+        $data = request()->input('envio');
+        $idship = (int) json_decode($data,true);
+
+        //return $idship;
+
+        $envio = envios::where('id_ship','=',$idship)->first();
+        $envio->status = 'delivered';
+        $envio->save();
+
+        return 'Envio actualizado';
+
     }
 
 }

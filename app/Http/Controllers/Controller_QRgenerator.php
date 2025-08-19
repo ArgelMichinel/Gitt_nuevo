@@ -10,8 +10,10 @@ class Controller_QRgenerator extends Controller
 {
     public function generarQR(Request $request, string $tag)
     {
+        $tag = base64_decode($tag);
         $tag = rawurldecode($tag);
         $title = "QR envío " . $tag;
+        //dd($tag);
 
         try {
             

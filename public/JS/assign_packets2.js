@@ -54,7 +54,6 @@ function activate_scanner() {
             scanner = new Instascan.Scanner({ video: document.getElementById('preview'), mirror: false });
             scanner.addListener('scan', function (content) {
                 prepare_QRdata(content);
-                audio.play();
             });
 
         } else {
@@ -62,7 +61,6 @@ function activate_scanner() {
             scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
             scanner.addListener('scan', function (content) {
                 prepare_QRdata(content);
-                audio.play();
             });
 
         }
@@ -227,6 +225,7 @@ function check_ingresado(shipnum) {
   //let direcc = "./check_ingresado?id_ship=" + shipnum;  
   let direcc = "./check_ingresado?id_ship=" + shipnum;  //La ruta de arriba es la de producción
   console.log(direcc);
+  let audio = document.getElementById("audio_scan");
   let audiomalo = document.getElementById("trompeta");
 
   fetch(direcc, {
@@ -247,6 +246,7 @@ function check_ingresado(shipnum) {
     if (typeof data.date_in !== 'undefined') {
       print_page(shipnum);
       ingresado =true;
+      audio.play();
     }
   })
   .catch(error => {

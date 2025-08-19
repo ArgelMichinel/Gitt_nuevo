@@ -1,6 +1,3 @@
-document.addEventListener('DOMContentLoaded',function(){  
-    constr_list();
-});
 ////////////////////////////// 
 
 function select_data() {
@@ -12,9 +9,6 @@ function select_data() {
 }
 
 ////////////////////////////// 
-document.addEventListener('DOMContentLoaded',function(){  
-    constr_list();
-});
 
 function constr_list() {
     let client_icon = document.getElementsByClassName('fa fa-user-circle-o');
@@ -57,7 +51,7 @@ function request_data(selec_client) {
 
 /////////////////////////////////////////////////////
 
-function constr_list() {
+function constr2_list() {
     let trash_icon = document.getElementsByClassName('fa fa-trash');
 
     for (i = 0; i < trash_icon.length; i++) {
@@ -69,3 +63,12 @@ function constr_list() {
     }
     
 }
+
+/////////////////////////////////////////////////////
+
+document.addEventListener('DOMContentLoaded',function(){  
+    constr_list();
+});
+document.addEventListener('DOMContentLoaded',function(){  
+    constr2_list();
+});

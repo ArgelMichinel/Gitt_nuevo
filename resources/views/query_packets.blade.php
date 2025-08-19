@@ -12,7 +12,7 @@
     <script type="text/javascript" language="javascript" src="{{ asset('JS/vfs_fonts.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.html5.min.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.print.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="{{ asset('JS/query_packets.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/query_packets9.js') }}"></script>
     <script type="text/javascript" class="init">
         $(document).ready(function() {
             var table = $('#example').DataTable( {
@@ -66,6 +66,69 @@
         
     </div>
 
+
+    <!-- Modal resumen de cadetes -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header float-right">
+                <h5>Detalles de asignación</h5>
+                <div class="text-right">
+                <i data-dismiss="modal" aria-label="Close" class="fa fa-close" style="cursor:pointer;"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                
+
+
+                <div>
+                
+                <table class="table table-bordered">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cadete</th>
+            <th scope="col">Administrador</th>
+            <th scope="col">Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <th scope="row">1</th>
+            <td id="mod_cad1"></td>
+            <td id="mod_adm1"></td>
+            <td id="mod_fec1"></td>
+            </tr>
+            <tr>
+            <th scope="row">2</th>
+            <td id="mod_cad2"></td>
+            <td id="mod_adm2"></td>
+            <td id="mod_fec2"></td>
+            </tr>
+            <tr>
+            <th scope="row">3</th>
+            <td id="mod_cad3"></td>
+            <td id="mod_adm3"></td>
+            <td id="mod_fec3"></td>
+            </tr>
+        </tbody>
+        </table>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fin modal resumen de cadetes -->
+
 @endsection
 
-@section('inc_script_end', '{{-- <!*******************************> --}}')
+@section('inc_script_end')
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/bootstrap2.bundle.min.js') }}"></script>
+
+@endsection

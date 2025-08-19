@@ -55,7 +55,12 @@
                         @endif
 
                         @if ($key === 'id_ship')
-                            <td class="id_ship"> {{ $value }} <i class="fa fa-qrcode" aria-hidden="true"></i> <i class="fa fa-eye" aria-hidden="true"></i></td>
+                            <td class="id_ship"> {{ $value }} <i class="fa fa-qrcode" aria-hidden="true"></i> 
+                                @if(Request::is('admin/logged_packets'))
+                                    {{-- El contenido aquí se mostrará si la URL comienza con 'admin/' --}}
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                @endif
+                            </td>
                         @endif
 
                         @if ($key == 'status')
@@ -84,6 +89,10 @@
                                     <td style="background-color: red; color: white; text-align: center;"> Cancelado</td>
                                     @break
                             
+                                @case('unpacked')
+                                    <td style="background-color: white; color: black; text-align: center;"><button class="btn" onclick="update_TN(this)">Unpacked</button></td>
+                                    @break
+
                                 @default
                                     <td style="background-color: white; color: black; text-align: center;"> {{ $value }}</td>
                             @endswitch  
@@ -92,12 +101,19 @@
                         @if ($key === 'sender_id')          {{-- Selección de la tabla donde se buscará el cliente sender del paquete --}}
                             <td style="display: none;"> {{ $value }}</td>
 
+                            @php
+                                            $miBandera = true;
+                            @endphp
+
                             
                             @if (substr($pack['id_ship'],0,2) === "GT")   {{-- Si el envío es de Gitt --}}
 
                                 @foreach ($clients as $cl => $variab)
                                     @if ($variab['id'] === $value)
                                         <td> {{ $variab['name'] }}</td>
+                                        @php
+                                            $miBandera = false;
+                                        @endphp
                                         @break
                                     @endif
                                 @endforeach
@@ -107,18 +123,28 @@
                                 @foreach ($clients as $cl => $variab)
                                     @if ($variab['id_MELI'] === $value)
                                         <td> {{ $variab['name'] }}</td>
+                                        @php
+                                            $miBandera = false;
+                                        @endphp
                                         @break
                                     @endif
+
                                     @if ($variab['id_TN'] === $value)
                                         <td> {{ $variab['name'] }}</td>
+                                        @php
+                                            $miBandera = false;
+                                        @endphp
                                         @break
                                     @endif
 
-                                    @if ($variab['id_MELI'] == $clients[count($clients)-1]['id_MELI'])   {{-- Sólo se usa si no se consigue el cadete --}}
-                                        <td> {{ $value }}</td>
-                                    @endif
 
                                 @endforeach
+                                
+                                @php  // Significa que no se halló el cliente en la tabla de clientes
+                                    if (isset($miBandera) && $miBandera) {
+                                        echo '<td>'. $value .'</td>';
+                                    }
+                                @endphp
 
                             @endif
 

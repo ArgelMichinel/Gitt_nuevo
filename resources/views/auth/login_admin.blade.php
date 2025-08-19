@@ -6,12 +6,10 @@
 
 @section('output')
 <div class="extern">
-    <x-header1></x-header1>
-  
   
     <h2>Bienvenido</h2>
     <div id="expandible">
-      <div id="cambio_acc"><a class="underH" href="{{ route('login_cadete') }}">>Acc. Adminitrador</a></div>
+      <div id="cambio_acc"><a class="underH" href="{{ route('login_cadete') }}">Acc. Adminitrador</a></div>
     </div>
   
     <div class="formu row">
