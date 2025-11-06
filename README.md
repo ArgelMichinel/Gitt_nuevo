@@ -21,7 +21,6 @@
         <strong>Ingreso de los envíos al sistema</strong><br>
         Los envíos se registran mediante la lectura del <em>código QR</em> de la etiqueta o a través del ingreso manual del código de identificación y del vendedor.
       </li>
-
       <li>
         <strong>Identificación de la plataforma de origen</strong><br>
         El sistema detecta si el envío proviene de una tienda de <strong>Mercado Libre</strong> o <strong>Tienda Nube</strong>, y realiza el llamado a la <em>API correspondiente</em> para obtener:
@@ -32,12 +31,10 @@
           <li>Estado actual de la encomienda.</li>
         </ul>
       </li>
-
       <li>
         <strong>Verificación y registro en la base de datos</strong><br>
         Antes de guardar la información, el sistema verifica que el envío no haya sido previamente registrado. En caso de no existir, lo almacena como un nuevo registro en la base de datos.
       </li>
-
       <li>
         <strong>Asignación a mensajeros</strong><br>
         Los <em>administradores</em> pueden:
@@ -47,7 +44,6 @@
         </ul>
         Cada mensajero puede ingresar al sistema para <em>consultar los envíos que tiene asignados</em> y el <em>estado de cada uno</em>.
       </li>
-
       <li>
         <strong>Actualización del estado de los envíos</strong><br>
         Mientras el envío no se encuentre en estado “Entregado” o “Cancelado”, el sistema <strong>consulta automáticamente cada 10 minutos</strong> la API correspondiente para actualizar el estado.
