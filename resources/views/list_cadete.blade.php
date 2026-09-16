@@ -12,7 +12,7 @@
     <script type="text/javascript" language="javascript" src="{{ asset('JS/vfs_fonts.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.html5.min.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.print.min.js') }}"></script>
-    {{-- <script type="text/javascript" language="javascript" src="{{ asset('JS/list_cadetes.js') }}"></script> --}}
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/list_cadetes.js') }}"></script>
     <script type="text/javascript" class="init">
         $(document).ready(function() {
             $('#example').DataTable( {
@@ -45,6 +45,9 @@
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>Status</th>
+                @if ($credencial == 1)
+                    <th>Borrar</th>
+                @endif
             </tr>
             
         </thead>
@@ -79,6 +82,10 @@
                         
                     @endforeach
 
+                    @if ($credencial == 1)
+                    <td style="text-align: center;"><button class="btn btn-danger btn-sm" onclick="confirmDelete({{ "'" . $cadetes[$i]['num_cadete'] . "'" }})">Borrar</button></td>
+                    @endif
+
                 </tr>
             @endfor
                 
@@ -95,6 +102,9 @@
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>Status</th>
+                @if ($credencial == 1)
+                    <th>Borrar</th>
+                @endif
             </tr>
             
         </tfoot>
@@ -107,6 +117,25 @@
 
     <button type="submit" id="cadete_edit">Registrar</button>
 </form>
+
+<div id="id01" class="modal">
+    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+    <div class="modal-content">
+        <div class="container">
+            <h1>Eliminar Cadete</h1>
+            <p style="font-size: 25px; color: black;">Esta acción no puede ser deshecha. ¿Está seguro de que desea borrar el cadete?</p>
+
+            <div class="clearfix">
+                <button type="button" class="btn cancelbtn" onclick="document.getElementById('id01').style.display='none'" style="background-color: #484242;">Cancelar</button>
+                <form action="" method="post">  
+                    @csrf
+                    <input type="text" name="del_cadete" id="del_cadete" style="display: none; background-color: red;">
+                    <button type="submit" class="btn deletebtn">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 

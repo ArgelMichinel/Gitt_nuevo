@@ -16,6 +16,7 @@ class administ extends Authenticatable
         'name',
         'email',
         'password',
+        'master',
     ];
 
     /**

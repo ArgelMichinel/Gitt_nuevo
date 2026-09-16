@@ -1,4 +1,4 @@
-@props(['packets', 'clients', 'cadetes', 'admin'])
+@props(['packets', 'clients'])
 
 <div>
     <table id="example" class="display nowrap" style="width:100%">
@@ -7,8 +7,6 @@
                 <th># envio</th>
                 <th>fec. ingreso</th>
                 <th>status</th>
-                <th style="display: none;"># cliente</th>
-                <th>nom. cliente</th>
                 <th># venta</th>
                 <th>calle</th>
                 <th>comentario</th>
@@ -36,7 +34,8 @@
                             ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete1') && ($key != 'cadete2') && 
                             ($key != 'cadete3') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')  && ($key != 'status_logistica')  && 
                             ($key != 'Latit')  && ($key != 'Longi')  && ($key != 'admin_cad1')  && ($key != 'admin_cad2')  && ($key != 'admin_cad3')  &&
-                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key != 'description')) 
+                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key != 'description') && ($key != 'admin_ingre') &&
+                            ($key != 'TN') && ($key != 'admin_status'))
                             <td class='{{ $key }}'> {{ $value }}</td>
                         @endif
 
@@ -69,40 +68,22 @@
                                 @case('cancelled')
                                     <td style="background-color: red; color: white; text-align: center;"> Cancelado</td>
                                     @break
+
+                                @case('cadete_asignado')
+                                    @if ($pack['date_first_visit'] === NULL)
+                                        <td style="background-color: blue; color: white; text-align: center;"> Asignado</td>
+                                    @else
+                                        <td  style="background-color: yellow; color: white; text-align: center;"> 1era visita</td>
+                                    @endif
+                                    @break
+                                
+                                @case('Pendiente')
+                                    <td style="background-color: blue; color: white; text-align: center;"> Pendiente</td>
+                                    @break
                             
                                 @default
                                     <td style="background-color: white; color: black; text-align: center;"> {{ $value }}</td>
                             @endswitch  
-                        @endif
-
-                        @if ($key === 'sender_id')          {{-- Selección de la tabla donde se buscará el cliente sender del paquete --}}
-                            <td style="display: none;"> {{ $value }}</td>
-
-                            
-                            @if (substr($pack['id_ship'],0,2) === "GT")   {{-- Si el envío es de Gitt --}}
-
-                                @foreach ($clients as $cl => $variab)
-                                    @if ($variab['id'] === $value)
-                                        <td> {{ $variab['name'] }}</td>
-                                        @break
-                                    @endif
-                                @endforeach
-                                
-                            @else 
-    
-                                @foreach ($clients as $cl => $variab)
-                                    @if ($variab['id_MELI'] === $value)
-                                        <td> {{ $variab['name'] }}</td>
-                                        @break
-                                    @endif
-                                    @if ($variab['id_TN'] === $value)
-                                        <td> {{ $variab['name'] }}</td>
-                                        @break
-                                    @endif
-                                @endforeach
-
-                            @endif
-
                         @endif
 
                         @if ($key === 'delivery_preference')
@@ -119,10 +100,6 @@
 
                         @if ($key == 'street_name')
                             <td>{{ $value }} {{ $pack['street_number'] }}</td>
-                        @endif
-
-                        @if ($key === 'time_cad1')
-                            <td style="display: none;"> {{ $value }}</td>     
                         @endif
 
                         @if ($key == 'country')
@@ -187,8 +164,6 @@
                 <th># envio</th>
                 <th>fec. ingreso</th>
                 <th>status</th>
-                <th style="display: none;"># cliente</th>
-                <th>nom. cliente</th>
                 <th># venta</th>
                 <th>calle</th>
                 <th>comentario</th>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\cadetes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class editCadeteController extends Controller
@@ -20,15 +21,18 @@ class editCadeteController extends Controller
         $title='Lista de cadetes';
 
         $cadetes = cadetes::all()->toArray();
+        $credencial = Auth::user();
+        $credencial = $credencial->master;
 
         //dd($cadetes[0]); 
         //Hay que acomodar la vista porque no muestra bien la tabla de los cadetes. http://localhost/gitt_nuevo/getittoday/public/admin/show_cadete
 
-        return view('list_cadete', compact('title', 'cadetes'));
+        return view('list_cadete', compact('title', 'cadetes', 'credencial'));
     }
 
     public function delet_cadete() {
-        $id_cade = request()->input('cadete');
+        $id_cade = request()->input('del_cadete');
+        //dd($id_cade);
 
         $cadete_eliminado = cadetes::where('num_cadete','=',$id_cade);
         $cadete_eliminado->delete();

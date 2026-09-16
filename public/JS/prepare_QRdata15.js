@@ -57,6 +57,10 @@ function request_data(sender_id, shipnum, content) {
 
           submit_array();
         }
+        if (Ajax.readyState==4 && Ajax.status==500) {
+          audiomalo.play();
+          return;
+        }
 
     }
 

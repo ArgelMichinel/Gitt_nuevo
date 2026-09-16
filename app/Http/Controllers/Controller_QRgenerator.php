@@ -21,8 +21,20 @@ class Controller_QRgenerator extends Controller
     
             $qrCode = QrCode::size(300)->generate($codeText);
     
-            // outputs image directly into browser, as PNG stream
-            return response($qrCode)->header('Content-Type', 'image/svg+xml');
+            $html = "
+            <!DOCTYPE html>
+            <html lang='es'>
+            <head>
+            <meta charset='UTF-8'>
+            <title>$title</title>
+            </head>
+            <body style='display:flex; justify-content:center; align-items:center; height:100vh;'>
+            $qrCode
+            </body>
+            </html>
+            ";
+
+            return response($html)->header('Content-Type', 'text/html');
 
         } catch (\Throwable $th) {
             echo ('Problema durante la consulta ' . $th);

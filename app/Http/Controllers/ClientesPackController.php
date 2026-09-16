@@ -49,7 +49,7 @@ class ClientesPackController extends Controller
 
         //dd($packets);
         
-        return view('query_packets_client',compact('title','dat_user', 'packets'));
+        return view('query_packets_client',compact('title','dat_user','packets'));
         
     }
 }

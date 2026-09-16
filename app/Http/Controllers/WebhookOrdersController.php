@@ -92,31 +92,12 @@ class WebhookOrdersController extends Controller
                     $pais = 1;
             }
             
-            if ($data[4][0]==NULL) {
-                $f_first_visita = NULL;
-            } else {
-                $f_first_visita = new \DateTime(substr($data[4][0], 0, 19));
-                $f_first_visita->modify('+1 hours');
-            }
-    
-            if ($data[4][1]==NULL) {
-                $f_delivered = NULL;
-            } else {
-                $f_delivered = new \DateTime(substr($data[4][1], 0, 19));
-                $f_delivered->modify('+1 hours');
-            }
-    
-            if ($data[4][2]==NULL) {
-                $f_not_delivered = NULL;
-            } else {
-                $f_not_delivered = new \DateTime(substr($data[4][2], 0, 19));
-            }
-            
             $colum = [];
             $colum['id_ship'] = $data[0][0];
             $colum['date_in'] = new \DateTime();
+            $colum['date_in']->modify('-3 hours');
             //$colum['date_in'] = $data[0][1]['date'];
-            $colum['status'] = $data[0][2];
+            $colum['status'] = 'Asignado'; //$data[0][2];
             $colum['sender_id'] = $data[0][3];
             $colum['order_id'] = $data[0][4];
             $colum['street_name'] = $data[1][0];
@@ -138,11 +119,12 @@ class WebhookOrdersController extends Controller
             $colum['receiver_name'] = $data[2][0];
             $colum['receiver_phone'] = $data[2][1];
             $colum['description'] = $data[3][0];
-            $colum['date_first_visit'] = $f_first_visita;
-            $colum['date_delivered'] = $f_delivered;
-            $colum['date_not_delivered'] = $f_not_delivered;
+            //$colum['date_first_visit'] = $f_first_visita;
+            //$colum['date_delivered'] = $f_delivered;
+            //$colum['date_not_delivered'] = $f_not_delivered;
             $colum['admin_ingre'] = (int)Auth::id();
             $colum['sticker'] = $data[0][5];
+            $colum['TN'] = true;
             
             try {
                 $this->MELIService->insert_pack($colum);
@@ -152,6 +134,12 @@ class WebhookOrdersController extends Controller
                 $repetidos = $repetidos + 1;
             }
 
+        }
+
+        if (auth('clientes')->check()) {        // Pasos para clientes ya loggeado con en el sistema que están agregando envios desde su tienda
+
+                $dat_user = auth('clientes')->user();
+                return view('received_orders_success',compact('title','num','detalle', 'repetidos','dat_user'));
         }
 
         return view('received_orders_success',compact('title','num','detalle', 'repetidos'));

@@ -41,6 +41,7 @@
                 <th># cliente</th>
                 <th>id MELI</th>
                 <th>id TNube</th>
+                <th>id Gitt</th>
                 <th>nombre</th>
                 <th>email</th>
                 <th>Borrar</th>
@@ -57,6 +58,7 @@
                     <td>{{ $clientes[$i]['id'] }}</td>
                     <td>{{ $clientes[$i]['id_MELI'] }}</td>
                     <td>{{ $clientes[$i]['id_TN'] }}</td>
+                    <td>{{ $clientes[$i]['id_Gitt'] }}</td>
                     <td>{{ $clientes[$i]['name'] }}</td>
                     <td>{{ $clientes[$i]['email'] }}</td>
                     <td style="text-align: center; color: black;"><i class="fa fa-trash" aria-hidden="true" title="Eliminar cliente."
@@ -74,6 +76,7 @@
                 <th># cliente</th>
                 <th>id MELI</th>
                 <th>id TNube</th>
+                <th>id Gitt</th>
                 <th>normbre</th>
                 <th>email</th>
                 <th>Borrar</th>

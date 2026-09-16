@@ -15,3 +15,8 @@ function create_icons() {
     }
     
 }
+
+function confirmDelete(num_cadete) {
+    document.getElementById("del_cadete").value = num_cadete;
+    document.getElementById("id01").style.display = "block";
+}

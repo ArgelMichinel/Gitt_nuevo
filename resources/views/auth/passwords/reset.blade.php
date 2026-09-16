@@ -1,14 +1,20 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
+@section('inc_head')
+    <link rel="stylesheet" href="{{ asset('Styles/access.css') }}">
+@endsection
+
+@section('output')
+<div class="extern">
+    <div class="formu row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Reset Password') }}</div>
+                  
+                <h2>Agregar datos para resetear clave</h2>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
+                    <form method="POST" action="{{ route('password.reset') }}">
                         @csrf
 
                         <input type="hidden" name="token" value="{{ $token }}">

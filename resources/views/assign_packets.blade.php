@@ -3,7 +3,7 @@
 @section('inc_head')
     <link rel="stylesheet" href="{{ asset('Styles/assign_packets.css') }}">
     <script type="text/javascript" language="javascript" src="{{ asset('JS/instascan.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="{{ asset('JS/assign_packets2.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/assign_packets6.js') }}"></script>
 @endsection
 
 @section('output')
@@ -79,10 +79,10 @@
                     </div>
                 
                     <button id="boton_definitivo" type="submit" style="display: none;"></button>
-                    <button class="btn" onclick="pulsar()">Asignar envios</button>
                         
                 </form>
             
+                    <button class="btn" onclick="pulsar()">Asignar envios</button>
         </div>
     
     </div>
@@ -164,7 +164,7 @@
                         <button type="submit" id="submit_scann" style="display: none;">someter scanner</button>
                     </form>
 
-                    <button class="btn" onclick="submit_array()">Asignar envios</button>
+                    <button class="btn" onclick="pulsar2()">Asignar envios</button>
 
                 </div>
 

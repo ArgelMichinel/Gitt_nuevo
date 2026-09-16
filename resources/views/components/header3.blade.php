@@ -24,6 +24,7 @@
     <h2><?=$title?></h2>
     
     <div class="topnav" id="myTopnav">
+        <a class="underH" href="{{ route('incluirEnvioGittCli')}}">Agregar envío Gitt</a>
         @if (!$dat_user['id_MELI'])
             <a class="underH" href="{{ route('integrar_MELI')}}">Agregar integración con MELI</a>
         @endif

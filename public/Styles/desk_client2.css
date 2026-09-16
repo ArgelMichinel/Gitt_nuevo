@@ -179,6 +179,30 @@ div.dataTables_wrapper {
   display: table;
 }
 
+.boton_enlace {
+  /* 1. Apariencia de botón */
+  display: inline-block; /* Permite ancho, alto y padding */
+  padding: 10px 20px;     /* Espacio interno */
+  background-color: #007BFF; /* Color de fondo */
+  color: white;          /* Color del texto */
+  text-decoration: none; /* Elimina el subrayado */
+  border-radius: 5px;    /* Bordes redondeados */
+  
+  /* 2. Tipografía y estilo */
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  border: 1px solid transparent;
+  
+  /* 3. Transición suave */
+  transition: background-color 0.3s ease;
+}
+
+/* 4. Efecto Hover (al pasar el ratón) */
+.boton_enlace:hover {
+  background-color: #0056b3; /* Color más oscuro al pasar el ratón */
+  color: white;
+}
+
 @media screen and (max-width: 900px){
   
   .extern {

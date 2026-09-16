@@ -31,12 +31,31 @@
                             ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete1') && ($key != 'cadete2') && 
                             ($key != 'cadete3') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')  && ($key != 'status_logistica')  && 
                             ($key != 'Latit')  && ($key != 'Longi')  && ($key != 'admin_cad1')  && ($key != 'admin_cad2')  && ($key != 'admin_cad3')  &&
-                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key !='description') && ($key !='comment_logis') ) 
+                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key !='description') && ($key !='comment_logis')  &&
+                            ($key != 'order_id') && ($key != 'TN') && ($key != 'admin_ingre') && ($key != 'admin_status')) 
                             <td class='{{ $key }}'> {{ $value }}</td>
                         @endif
 
                         @if ($key === 'id_ship')
                             <td class="id_ship">{{ $value }}</td>
+                        @endif
+
+                        @if ($key === 'order_id')
+                            @if ($pack['TN'] === 1)
+                                <td class="order_id"> {{ $value }} <i class="fa fa-id-card-o" aria-hidden="true"></i>
+
+                                    @if ($key === 'order_id')
+                                        @if (substr($pack['id_ship'],0,1) === "G")   {{-- Si el envío es de Gitt --}}
+                                            <a href="{{ route('incluirEnvioGittCli', ['id' => $pack['id_ship']]) }}"><i class="fa fa-edit"></i></a>
+                                        @else
+                                            // Si el envío no es de Gitt, no se muestra el ícono de edición
+                                        @endif
+                                    @endif
+                                    
+                                </td>
+                            @else
+                                <td class="order_id"> {{ $value }}</td>
+                            @endif
                         @endif
 
                         @if ($key == 'status')
@@ -47,27 +66,46 @@
                             
                                 @case('shipped')
                                     @if ($pack['date_first_visit'] === NULL)
-                                        <td style="background-color: blue; color: white; text-align: center;"> En curso</td>
+                                        <td style="background-color: blue; color: white; text-align: center;"> En curso
                                     @else
-                                        <td  style="background-color: yellow; color: white; text-align: center;"> 1era visita</td>
+                                        <td  style="background-color: yellow; color: white; text-align: center;"> 1era visita
                                     @endif
                                     @break
                             
                                 @case('delivered')
-                                    <td style="background-color: green; color: white; text-align: center;"> Completado</td>
+                                    <td style="background-color: green; color: white; text-align: center;"> Completado
                                     @break
                         
                                 @case('not_delivered')
-                                    <td style="background-color: red; color: white; text-align: center;"> No completado</td>
+                                    <td style="background-color: red; color: white; text-align: center;"> No completado
                                     @break
                         
                                 @case('cancelled')
-                                    <td style="background-color: red; color: white; text-align: center;"> Cancelado</td>
+                                    <td style="background-color: red; color: white; text-align: center;"> Cancelado
+                                    @break
+
+                                @case('cadete_asignado')
+                                    <td style="background-color: blue; color: white; text-align: center;"> En curso
+                                    @break
+
+                                @case('Pendiente')
+                                    <td style="background-color: blue; color: white; text-align: center;"> Pendiente</td>
+                                    @break
+
+                                @case('Asignado')
+                                    <td style="background-color: rgb(97, 97, 100); color: white; text-align: center;"> Asignado
                                     @break
                             
                                 @default
-                                    <td style="background-color: white; color: black; text-align: center;"> {{ $value }}</td>
+                                    <td style="background-color: white; color: black; text-align: center;"> {{ $value }}
                             @endswitch  
+
+                            @if (($pack['status'] != 'delivered') & ($pack['status'] != 'cancelled'))
+                                <br><button class="btn2" onclick="cancel_ship(this)" style="padding: 5px 20px;">Cancel</button>
+                            @endif
+
+                            </td>
+
                         @endif
 
                         @if ($key === 'city')
@@ -130,4 +168,21 @@
             </tr>
         </tfoot>
     </table>
+</div>
+
+<div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form class="modal-content" action="{{ route('cancel_gitt') }}" method="post">
+    @csrf
+    <div class="container">
+        <input type="text" id="id01_id_ship" name="id_ship" value="" style="display: none">
+      <h1>Cancelar Envío</h1>
+      <p>¿Estás seguro que quieres canacelar el envío?</p>
+
+      <div class="clearfix">
+        <button type="button" class="cancelbtn" onclick="document.getElementById('id01').style.display='none'">Salir</button>
+        <button type="submit" class="deletebtn">Cancelar envío</button>
+      </div>
+    </div>
+  </form>
 </div>

@@ -92,7 +92,7 @@ class LoginController extends Controller
         return route('login');
     }
 
-    protected function perfil(Request $request): string {
+    public function perfil(Request $request): string {
         //Guarda en la variable perfil el tipo de usuario que debe tener para la ruta solicitada
         if ($request->is('admin*')) {
             return 'administ';

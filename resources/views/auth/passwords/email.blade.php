@@ -1,11 +1,17 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
+@section('inc_head')
+    <link rel="stylesheet" href="{{ asset('Styles/access.css') }}">
+@endsection
+
+@section('output')
+<div class="extern">
+    <div class="formu row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Reset Password') }}</div>
+
+                <h2>Ingrese su email</h2>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -36,6 +42,11 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Send Password Reset Link') }}
                                 </button>
+                            </div>
+                        </div>
+                        <div class="row mb-0">
+                            <div class="col-md-6 offset-md-4">
+                                <a href="{{ route('login') }}">Regresar al login</a>
                             </div>
                         </div>
                     </form>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\clientes;
 use App\Services\MELIService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,7 +25,8 @@ class CadetesPackController extends Controller
         $var = request()->input('new_query');
         $new_query = $var;
         $new_query['incl_cadete'] = true;
-        $new_query['cadete'] = $dat_user['id'];
+        $new_query['cadete'] = $dat_user['num_cadete'];
+        //dd($new_query);
 
         if (isset($var)) {
             $title='Consulta de envíos';
@@ -41,9 +43,11 @@ class CadetesPackController extends Controller
             $packets = $this->MELIService->query_customized($new_query);
         }
 
+        $clients = clientes::all()->toArray();
+
         //dd($packets);
         
-        return view('query_packets_client',compact('title', 'packets'));
+        return view('query_packets_cadete',compact('title', 'packets', 'clients'));
         
     }
 }

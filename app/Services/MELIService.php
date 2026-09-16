@@ -203,7 +203,7 @@ class MELIService
         $body = array(
                         'name' => $NOMBRE_CARRIER_TN,
                         'callback_url'  => $WEBHOOK_PRECIOS,
-                        'types'  => 'ship'
+                        'types'  => 'ship,pickup'
                     );
     
         $headers_req =array(
@@ -287,13 +287,16 @@ class MELIService
     
         $seleccionado = envios::where($primaryKey, '=', $fields[$primaryKey])->first(); 
 
-        $seleccionado->status = $fields['status'];
-        $seleccionado->street_name = $fields['street_name'];
-        $seleccionado->date_first_visit = $fields['date_first_visit'];
-        $seleccionado->date_delivered = $fields['date_delivered'];
-        $seleccionado->date_not_delivered = $fields['date_not_delivered'];
-        
-        $seleccionado -> save();
+        if ($seleccionado->TN != 1) {
+            $seleccionado->status = $fields['status'];
+            $seleccionado->street_name = $fields['street_name'];
+            $seleccionado->date_first_visit = $fields['date_first_visit'];
+            $seleccionado->date_delivered = $fields['date_delivered'];
+            $seleccionado->date_not_delivered = $fields['date_not_delivered'];
+            
+            $seleccionado -> save();
+        }
+
     }
     
     //////////////////////////////////////////////////////// modificada
@@ -485,15 +488,17 @@ class MELIService
         } 
         if (isset($parameters['incl_client'])) {
             $envios2 = clone $envios;
+            $envios3 = clone $envios;
             $id_MELI = clientes::where('id','=',$parameters['client'])->first()->id_MELI;
             $id_TN = clientes::where('id','=',$parameters['client'])->first()->id_TN;
+            $id_Gitt = clientes::where('id','=',$parameters['client'])->first()->id_Gitt;
             if ($id_MELI) {
                 $envios -> where('sender_id', '=', $id_MELI);
                 //dd('Paso por envios MELI '. $id_MELI. ' ' . $id_TN);
             } else {
                 $envios -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con MELI
             }
-            
+
             if ($id_TN) {
                 $envios2 -> where('sender_id', '=', $id_TN);
                 //dd('Paso por envios TN');
@@ -501,10 +506,18 @@ class MELIService
                 $envios2 -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con TN
             }
 
+            if ($id_Gitt) {
+                $envios3 -> where('sender_id', '=', $id_Gitt);
+                //dd('Paso por envios Gitt');
+            } else {
+                $envios3 -> where('sender_id', '=', 'XXXXXXXXX'); // Para que no arroje resultados porque el usuario no tiene integración con Gitt
+            }
+
             $result1 = $envios->get();
             $result2 = $envios2->get();
-            
-            $result = $result1 -> merge($result2);
+            $result3 = $envios3->get();
+
+            $result = $result1 -> merge($result2) -> merge($result3);
 
         } else {
             $result = $envios->get();
@@ -530,6 +543,25 @@ class MELIService
         }  
         
     }
+    
+    /////////////////////////////////////////////////////// modificada
+    
+    public function update_by_lots2 ($primaryKey, $fields) {
+        
+        $n_data = count($fields);
+        for ($i = 0; $i < $n_data; $i++) {
+            
+            /////////////////////////////////////////////////
+            $seleccionado = envios::where($primaryKey, '=', $fields[$i][$primaryKey])->first();
+
+            $seleccionado->status_logistica = $fields[$i]['status_logistica'];
+            $seleccionado->comment_logis = $fields[$i]['comment_logis'];
+        
+            $seleccionado -> save();
+            
+        }  
+        
+    }
 
     /////////////////////////////////////////////////////// modificada
 
@@ -547,8 +579,11 @@ class MELIService
             $selec-> admin_cad2 = $selec-> admin_cad1;
             $selec-> cadete1 = $fields[$i]['cadete1'];
             $selec-> time_cad1 = new \DateTime();
-            $selec-> time_cad1->modify('-3 hours');
+            $selec-> time_cad1->modify('-4 hours');
             $selec-> admin_cad1 = $fields[$i]['admin_cad1'];
+            if ($selec-> TN == 1) {
+                $selec-> status = 'cadete_asignado';
+            }
             /////////////////////////////////////////////////
             $selec -> save();
             
@@ -581,6 +616,7 @@ class MELIService
         $shipping[3] = $sender_id;                  //'sender_id'
         $shipping[4] = $shipping_res['order_id'];        //'order_id'
         $shipping[5] = $sticker;                      //'Etiqueta'
+        $shipping[6] = 0;                      //'Indicador de TiendaNube'
         
         $address = [];
         $address[0] = $shipping_res['receiver_address']['street_name'];        //'street_name'
@@ -640,10 +676,11 @@ class MELIService
         $shipping = [];
         $shipping[0] = $id_order;                   //'id_ship'
         $shipping[1] = new \DateTime();             //'date_in'
-        $shipping[2] = $shipping_res['shipping_status'];     //'status'
+        $shipping[2] = 'unpacked';     //'status' $shipping_res['shipping_status']
         $shipping[3] = $user_id;                    //'sender_id'
-        $shipping[4] = $id_order;                   //'order_id'
+        $shipping[4] = $shipping_res['number'];     //'# número de orden'
         $shipping[5] = $sticker;                      //'Etiqueta'
+        $shipping[6] = 1;                      //'Indicador de TiendaNube'
         
         $address = [];
         $address[0] = $shipping_res['shipping_address']['address'];               //'street_name'
@@ -748,4 +785,26 @@ class MELIService
 
         $envio->save();
     }
+    
+    //////////////////////////////////////////////////////// modificado
+    
+    public function edit_envios($primaryKey, $fields) {
+    
+        $seleccionado = envios::where($primaryKey, '=', $fields[$primaryKey])->first(); 
+
+        foreach ($fields as $key => $value) {
+            $seleccionado->$key = $value;
+        }
+
+        $seleccionado -> save();
+    }
+    
+     //////////////////////////////////////////////////////// modificado
+     public function delete_envios($primaryKey, $id) {
+    
+        $seleccionado = envios::where($primaryKey, '=', $id)->first(); 
+
+        $seleccionado -> delete();
+        
+     }
 }

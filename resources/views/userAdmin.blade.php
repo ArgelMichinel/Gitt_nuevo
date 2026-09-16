@@ -39,6 +39,7 @@
                     <th>Nombre</th>
                     <th>email</th>
                     <th>Borrar</th>
+                    <th>Editar</th>
                 </tr>
                 
             </thead>
@@ -46,10 +47,14 @@
                 @for ($i = 1; $i < count($administra); $i++)
                     <tr>
                         @foreach ($administra[$i] as $key => $value )
-                            <td>{{ $value }}</td>
+                            @if ($key != 'id')
+                                <td>{{ $value }}</td>
+                            @endif
                         @endforeach
                         <td style="text-align: center; color: black;"><i class="fa fa-trash" aria-hidden="true" title="Eliminar admin."
                             aria-label="Eliminar admin."></i></td>
+                        <td style="text-align: center; color: black;"><a href="{{ route('formuAddAdmin', ['id' => $administra[$i]['id']]) }}"><i class="fa fa-pencil" aria-hidden="true" title="Editar admin."
+                            aria-label="Editar admin."></i></a></td>
                     </tr>
                 @endfor
             </tbody>
@@ -59,6 +64,7 @@
                     <th>Nombre</th>
                     <th>email</th>
                     <th>Borrar</th>
+                    <th>Editar</th>
                 </tr>
                 
             </tfoot>

@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function ()    {
         
         //alert(selec_QR);
         let foo = prompt('Copia el QR',selec_QR);
-        window.open('QRgenerator/' + btoa(encodeURIComponent(selec_QR))); // Se codificó a base64 para poderlo pasar sin problema por la URL
+        window.open('QRgenerator.php?id=' + selec_QR);
         });
         
     }});
@@ -183,3 +183,16 @@ document.addEventListener("DOMContentLoaded", function ()    {
     function cambio_cadete() {
         document.getElementById('cadete_definitivo').value = document.getElementById('dummy_cadete').value.slice(-6);
       }
+      
+
+/////////////////////////////////////
+function delete_ship(elemento) {
+
+    let id_ship;
+    
+    id_ship = elemento.parentElement.parentElement.children[1].innerText;
+    console.log(id_ship);
+    document.getElementById('id01_id_ship').value = id_ship;
+    document.getElementById('id01').style.display='block';
+
+}

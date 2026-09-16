@@ -6,6 +6,7 @@ use App\Models\access_meli;
 use App\Models\access_nube;
 use App\Models\clientes;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 
 class editClienteController extends Controller
 {
@@ -56,6 +57,38 @@ class editClienteController extends Controller
         }
 
         return view('actual_cliente', compact('title','cliente'));
+    }
+
+    public function agregar_get() {
+        $title='Agregar Cliente';
+
+        return view('agregar_cliente', compact('title'));
+    }
+
+    public function agregar_post() {
+        $request = request()->input();
+
+        $cliente = new clientes();
+        $cliente->name = $request['cliente']['name'];
+        $cliente->email = $request['cliente']['email'];
+        $cliente->password = rand(100000000,999999999);
+
+        Try {
+            $cliente->save();
+            $title='Cliente añadido con éxito';
+            $mensaje = 'El cliente '.$cliente->name.' ha sido añadido con éxito a la base de datos.';
+
+            $act_cliente = clientes::where('id','=',$cliente["id"])->get()->first();
+            $act_cliente->id_Gitt = 'G'. $cliente["id"];
+            $act_cliente->save();
+
+        } catch (\Exception $e) {
+            $title='Error al agregar cliente';
+            $mensaje = 'Ha ocurrido un error al intentar agregar el cliente. ' . $e->getMessage();
+        }
+
+        return view('added_cliente_success', compact('title', 'mensaje'));
+
     }
 
 

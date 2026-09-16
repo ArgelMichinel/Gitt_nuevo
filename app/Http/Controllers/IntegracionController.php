@@ -127,6 +127,10 @@ class IntegracionController extends Controller
 
             $usuario->save();
 
+            $act_usuario = clientes::where('id','=',$usuario["id"])->get()->first();
+            $act_usuario->id_Gitt = 'G'. $usuario["id"];
+            $act_usuario->save();
+
             $existe = access_meli::where('user_id','=',$new_user["user_id"])->get()->toArray();
 
             if (count($existe) == 0) { //Condicional para saber si es un usuario nuevo o una actualización de access token
@@ -265,6 +269,10 @@ class IntegracionController extends Controller
             $usuario->id_TN = $new_user["user_id"];
 
             $usuario->save();
+
+            $act_usuario = clientes::where('id','=',$usuario["id"])->get()->first();
+            $act_usuario->id_Gitt = 'G'. $usuario["id"];
+            $act_usuario->save();
 
             $existe = access_nube::where('user_id','=',$new_user["user_id"])->get()->toArray();
 

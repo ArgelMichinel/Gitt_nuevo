@@ -12,7 +12,7 @@
     <script type="text/javascript" language="javascript" src="{{ asset('JS/vfs_fonts.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.html5.min.js') }}"></script>
     <script type="text/javascript" language="javascript" src="{{ asset('JS/buttons.print.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="{{ asset('JS/query_packets9.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('JS/query_packets16.js') }}"></script>
     <script type="text/javascript" class="init">
         $(document).ready(function() {
             var table = $('#example').DataTable( {
@@ -45,7 +45,7 @@
         
         <x-select_columna></x-select_columna>
         
-        <x-tabla_query :packets="$packets" :clients="$clients" :cadetes="$cadetes" :admin="$admin"></x-tabla_query>
+        <x-tabla_query :packets="$packets" :clients="$clients" :cadetes="$cadetes" :admin="$admin" :credencial="$credencial"></x-tabla_query>
         
     </div>
     
@@ -83,36 +83,53 @@
 
                 <div>
                 
-                <table class="table table-bordered">
-        <thead>
-            <tr>
-            <th scope="col">#</th>
-            <th scope="col">Cadete</th>
-            <th scope="col">Administrador</th>
-            <th scope="col">Fecha</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <th scope="row">1</th>
-            <td id="mod_cad1"></td>
-            <td id="mod_adm1"></td>
-            <td id="mod_fec1"></td>
-            </tr>
-            <tr>
-            <th scope="row">2</th>
-            <td id="mod_cad2"></td>
-            <td id="mod_adm2"></td>
-            <td id="mod_fec2"></td>
-            </tr>
-            <tr>
-            <th scope="row">3</th>
-            <td id="mod_cad3"></td>
-            <td id="mod_adm3"></td>
-            <td id="mod_fec3"></td>
-            </tr>
-        </tbody>
-        </table>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Cadete</th>
+                            <th scope="col">Administrador</th>
+                            <th scope="col">Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <th scope="row">1</th>
+                            <td id="mod_cad1"></td>
+                            <td id="mod_adm1"></td>
+                            <td id="mod_fec1"></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">2</th>
+                            <td id="mod_cad2"></td>
+                            <td id="mod_adm2"></td>
+                            <td id="mod_fec2"></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">3</th>
+                            <td id="mod_cad3"></td>
+                            <td id="mod_adm3"></td>
+                            <td id="mod_fec3"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div>
+                
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                            <th scope="col">Administrador status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td id="adm_status"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                 </div>
 

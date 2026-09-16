@@ -13,14 +13,19 @@
         @csrf
         <h1>Nuevo Administrador</h1>
 
+        <input type="text" name="new_admin[id]" value="{{ $datos->id ?? '' }}" style="display: none">
+
         <label for="new_admin[nombre]"><b>Nombre</b></label>
-        <input type="text" placeholder="Introduzca el nombre" name="new_admin[nombre]"  required>
+        <input type="text" placeholder="Introduzca el nombre" name="new_admin[nombre]" value="{{ $datos->name ?? '' }}" required>
         
         <label for="new_admin[email]"><b>email</b></label>
-        <input type="text" placeholder="Introduzca el email" name="new_admin[email]" required>
+        <input type="text" placeholder="Introduzca el email" name="new_admin[email]" value="{{ $datos->email ?? '' }}" required>
 
         <label for="new_admin[password]"><b>Contraseña</b></label>
         <input type="password" placeholder="Introduzca su contraseña" name="new_admin[password]" required>
+        
+        <label for="new_admin[master]"><b>Usuario Master</b></label>
+        <input type="checkbox" name="new_admin[master]" {{ $datos->master ?? '' }}>
 
         <button type="submit" class="btn">Registrar</button>
     </form>

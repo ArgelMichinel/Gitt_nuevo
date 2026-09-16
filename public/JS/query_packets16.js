@@ -98,6 +98,8 @@ function constr_list() {
 
             alert('Creada la lista exitosamente');
 
+        } else {
+            console.log('Informacion enviada. Paquetes seleccionados: ' + json_list);
         }
 
     }
@@ -126,12 +128,31 @@ document.addEventListener("DOMContentLoaded", function ()    {
         QR_tags[i].addEventListener("click", function() {
         var selec_QR = this.parentElement.parentElement;
         //console.log(selec_QR);
-        selec_QR = selec_QR.children[selec_QR.children.length - 1].innerText;
+        selec_QR = selec_QR.children[32].innerText;
         navigator.clipboard.writeText(selec_QR);
         
         //alert(selec_QR);
         let foo = prompt('Copia el QR',selec_QR);
         window.open('QRgenerator/' + btoa(encodeURIComponent(selec_QR))); // Se codificó a base64 para poderlo pasar sin problema por la URL
+        });
+        
+}});
+
+//////////////////////////////
+document.addEventListener("DOMContentLoaded", function ()    {
+    var TN_sticker = document.getElementsByClassName('fa fa-id-card-o');
+    
+    //let ele_select = document.getElementsByClassName(elemen.id);
+
+    for (i=0; i < TN_sticker.length; i++) {
+        TN_sticker[i].addEventListener("click", function() {
+        var selec_shipnum = this.parentElement.parentElement;
+        //console.log(selec_QR);
+        selec_shipnum = selec_shipnum.children[1].innerText;
+        
+        //alert(selec_QR);
+        //let foo = prompt('Copia el QR',selec_QR);
+        window.open('Sticker_TN/' + selec_shipnum); 
         });
         
 }});
@@ -171,6 +192,7 @@ document.addEventListener("DOMContentLoaded", function ()    {
             document.getElementById("mod_fec1").innerText = selec_QR.children[15].innerText
             document.getElementById("mod_fec2").innerText = selec_QR.children[18].innerText
             document.getElementById("mod_fec3").innerText = selec_QR.children[21].innerText
+            document.getElementById("adm_status").innerText = selec_QR.children[22].innerText
         } else {
             document.getElementById("mod_cad1").innerText = selec_QR.children[20].innerText
             document.getElementById("mod_cad2").innerText = selec_QR.children[23].innerText
@@ -181,6 +203,7 @@ document.addEventListener("DOMContentLoaded", function ()    {
             document.getElementById("mod_fec1").innerText = selec_QR.children[22].innerText
             document.getElementById("mod_fec2").innerText = selec_QR.children[25].innerText
             document.getElementById("mod_fec3").innerText = selec_QR.children[28].innerText
+            document.getElementById("adm_status").innerText = selec_QR.children[29].innerText
         }
         
         myModal.show();
@@ -198,18 +221,23 @@ function cambio_cadete() {
 
 
 //////////////////////////////
-function update_TN(elemento) {
+function update_TN(elemento,status) {
 
+  var status_envio = status;
   var elemento
   var fila = elemento.parentElement.parentElement;
+  var urlActual = window.location.href; //Obtiene la URL completa
+  // Crea un objeto URL a partir de la URL actual
+  const urlObjeto = new URL(urlActual);
   //console.log(fila);
-  var idship = fila.children[1].innerText;
+  var idship ="\"" + fila.children[1].innerText + "\""  // Se le agregan comillas para que se reconozca como string en el backend;
   console.log(JSON.stringify(idship));
   let json_id = {
-      "envio": idship
+      "envio": idship,
+      "status": status_envio
     }
 
-   fetch(window.location.href + '/update_TN', {
+   fetch(urlObjeto.origin + urlObjeto.pathname + '/update_TN', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -221,9 +249,30 @@ function update_TN(elemento) {
   .then(response => {
     console.log(response.status)
     const texto = document.createElement("span");
-    texto.textContent = "Completado";
+    if (status_envio == 'first_visit') {
+      texto.textContent = "1era visita";
+    } else if (status_envio == 'cancelled') {
+      texto.textContent = "Cancelado";
+    } else {
+      texto.textContent = "Completado";
+    }
+    
     elemento.parentNode.replaceChild(texto, elemento);
   })
   .catch(error => console.error('Error:', error));
+
+}
+
+
+
+/////////////////////////////////////
+function delete_ship(elemento) {
+
+    let id_ship;
+    
+    id_ship = elemento.parentElement.parentElement.children[1].innerText;
+    console.log(id_ship);
+    document.getElementById('id01_id_ship').value = id_ship;
+    document.getElementById('id01').style.display='block';
 
 }

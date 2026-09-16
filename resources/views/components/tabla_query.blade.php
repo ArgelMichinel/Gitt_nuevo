@@ -1,4 +1,4 @@
-@props(['packets', 'clients', 'cadetes', 'admin'])
+@props(['packets', 'clients', 'cadetes', 'admin', 'credencial'])
 
 <div>
     <table id="example" class="display nowrap" style="width:100%">
@@ -33,6 +33,7 @@
                 <th style="display: none;">cadete-3</th>
                 <th style="display: none;">admin_cad3</th>
                 <th style="display: none;">fec. asig3</th>
+                <th style="display: none;">admin_status</th>
                 <th>Status logis.</th>
                 <th>coment. logist.</th>
                 <th style="display: none;">sticker</th>
@@ -50,7 +51,8 @@
                             ($key != 'street_name') && ($key != 'street_number') && ($key != 'receiver_phone') && ($key != 'cadete1') && ($key != 'cadete2') && 
                             ($key != 'cadete3') && ($key != 'sticker') && ($key != 'id_ship') && ($key != 'country')  && ($key != 'status_logistica')  && 
                             ($key != 'Latit')  && ($key != 'Longi')  && ($key != 'admin_cad1')  && ($key != 'admin_cad2')  && ($key != 'admin_cad3')  &&
-                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key != 'admin_ingre')) 
+                            ($key != 'time_cad1')  && ($key != 'time_cad2')  && ($key != 'time_cad3') && ($key != 'admin_ingre') && ($key != 'TN') && 
+                            ($key != 'order_id') && ($key != 'date_in') && ($key != 'admin_status'))
                             <td class='{{ $key }}'> {{ $value }}</td>
                         @endif
 
@@ -61,6 +63,14 @@
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 @endif
                             </td>
+                        @endif
+
+                        @if ($key === 'date_in')
+                            @if ($credencial === 1)
+                                <td class='{{ $key }}'> {{ $value }} <button class="btn2" onclick="delete_ship(this)" style="padding: 5px 20px;">Borrar</button></td>
+                            @else
+                                <td class='{{ $key }}'> {{ $value }}</td>
+                            @endif
                         @endif
 
                         @if ($key == 'status')
@@ -89,8 +99,20 @@
                                     <td style="background-color: red; color: white; text-align: center;"> Cancelado</td>
                                     @break
                             
-                                @case('unpacked')
-                                    <td style="background-color: white; color: black; text-align: center;"><button class="btn" onclick="update_TN(this)">Unpacked</button></td>
+                                @case('cadete_asignado')
+                                    @if ($pack['date_first_visit'] === NULL)
+                                        <td style="background-color: blue; color: white; text-align: center;"> Asignado<br><button class="btn" onclick="update_TN(this,'first_visit')" style="width: 45%;">1era visit.</button><button class="btn" onclick="update_TN(this,'delivered')" style="width: 45%;">Compl.</button></td>
+                                    @else
+                                        <td  style="background-color: yellow; color: white; text-align: center;"> 1era visita<br><button class="btn" onclick="update_TN(this,'first_visit')" style="width: 45%;">1era visit.</button><button class="btn" onclick="update_TN(this,'delivered')" style="width: 45%;">Compl.</button></td>
+                                    @endif
+                                    @break
+
+                                @case('Pendiente')
+                                    <td style="background-color: blue; color: white; text-align: center;"> Pendiente</td>
+                                    @break
+
+                                @case('Asignado')
+                                    <td style="background-color: rgb(97, 97, 100); color: white; text-align: center;"> Asignado</td>
                                     @break
 
                                 @default
@@ -106,22 +128,34 @@
                             @endphp
 
                             
-                            @if (substr($pack['id_ship'],0,2) === "GT")   {{-- Si el envío es de Gitt --}}
+                            @if (substr($pack['id_ship'],0,1) === "G")   {{-- Si el envío es de Gitt --}}
 
                                 @foreach ($clients as $cl => $variab)
-                                    @if ($variab['id'] === $value)
-                                        <td> {{ $variab['name'] }}</td>
+                                    @if ($variab['id_Gitt'] === $value)
+                                        {{-- <td> {{ $variab['name'] }}</td> --}}
+                                        <td> {{ $variab['name'] }}<i class="fa fa-id-card-o" aria-hidden="true"></i>
+                                            @if (($pack['status'] != 'delivered') & ($pack['status'] != 'cancelled'))
+                                                <br><button class="btn2" onclick="update_TN(this,'cancelled')">Cancel</button>
+                                            @endif
+                                        </td>
                                         @php
                                             $miBandera = false;
                                         @endphp
                                         @break
                                     @endif
                                 @endforeach
+
+                                
+                                @php  // Significa que no se halló el cliente en la tabla de clientes
+                                    if (isset($miBandera) && $miBandera) {
+                                        echo '<td>'. $value .'</td>';
+                                    }
+                                @endphp
                                 
                             @else 
     
                                 @foreach ($clients as $cl => $variab)
-                                    @if ($variab['id_MELI'] === $value)
+                                    @if ($variab['id_MELI'] === $value)   {{-- Si el envío es de ML --}}
                                         <td> {{ $variab['name'] }}</td>
                                         @php
                                             $miBandera = false;
@@ -129,8 +163,8 @@
                                         @break
                                     @endif
 
-                                    @if ($variab['id_TN'] === $value)
-                                        <td> {{ $variab['name'] }}</td>
+                                    @if ($variab['id_TN'] === $value)     {{-- Si el envío es de TN --}}
+                                        <td> {{ $variab['name'] }}<i class="fa fa-id-card-o" aria-hidden="true"></i></td>
                                         @php
                                             $miBandera = false;
                                         @endphp
@@ -161,6 +195,14 @@
 
                         @if ($key === 'delivery_preference')
                             <td style="display: none;"> {{ $value }}</td>
+                        @endif
+
+                        @if ($key === 'order_id')
+                            @if (substr($pack['id_ship'],0,1) === "G")   {{-- Si el envío es de Gitt --}}
+                                <td class="order:id"> {{ $value }} <a href="{{ route('incluirEnvioGitt', ['id' => $pack['id_ship']]) }}"><i class="fa fa-edit"></i></a></td>
+                            @else
+                                <td class="order:id"> {{ $value }}</td>
+                            @endif
                         @endif
                         
                         @if ($key === 'city')
@@ -220,6 +262,19 @@
                                 @endif
                                 @if ($variab['id'] == $admin[count($admin)-1]['id']) 
                                     <td> {{ $value }}</td> {{-- Sólo se usa si no se consigue el administrador --}}
+                                @endif
+                            @endforeach
+                            
+                        @endif
+
+                        @if ($key === 'admin_status')
+                            @foreach ($admin as $id => $variab)
+                                @if ($variab['id'] == $value)
+                                    <td style="display: none;"> {{ $variab['name'] }}</td>
+                                    @break
+                                @endif
+                                @if ($variab['id'] == $admin[count($admin)-1]['id']) 
+                                    <td style="display: none;"> {{ $value == "" ? "-" : $value }}</td> {{-- Sólo se usa si no se consigue el administrador --}}
                                 @endif
                             @endforeach
                             
@@ -317,10 +372,29 @@
                 <th style="display: none;">cadete-3</th>
                 <th style="display: none;">admin_cad3</th>
                 <th style="display: none;">fec. asig3</th>
+                <th style="display: none;">admin_status</th>
                 <th class="status_logistica">Status logis.</th>
                 <th class="comment_logis">coment. logist.</th>
                 <th style="display: none;">sticker</th>
             </tr>
         </tfoot>
     </table>
+</div>
+
+
+<div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form class="modal-content" action="{{ route('borrar') }}" method="post">
+    @csrf
+    <div class="container">
+        <input type="text" id="id01_id_ship" name="id_ship" value="" style="display: none">
+      <h1>Cancelar Envío</h1>
+      <p>¿Estás seguro que quieres Borrar el envío?</p>
+
+      <div class="clearfix">
+        <button type="button" class="cancelbtn" onclick="document.getElementById('id01').style.display='none'">Salir</button>
+        <button type="submit" class="deletebtn">Borrar envío</button>
+      </div>
+    </div>
+  </form>
 </div>

@@ -58,7 +58,7 @@
     </main>
 
 </body>
-<script type="text/javascript" src="{{ asset('JS/H-Script.js') }}"></script>
+<script type="text/javascript" src="{{ asset('JS/H-Script3.js') }}"></script>
 @yield('inc_script_end')
 
 </html>

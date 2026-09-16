@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\clientes;
 use App\Models\table_price;
+use App\Models\table_grabar;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -18,14 +19,15 @@ class WebhookPriceController extends Controller
         }
 
         $data = request()->input();
+        $this->grabar($data);
         //dd($data);
         // verificación de que la tienda que solicita está integrada
         //$data = json_decode($data,true);
-        $cliente = clientes::where('id_TN','=',$data['store_id'])->first();
+        /* $cliente = clientes::where('id_TN','=',$data['store_id'])->first();
 
         if ( !$cliente ) {
             abort(403, 'Tienda no integrada');
-        }
+        } */
 
         if ((int)$data['destination']['postal_code'] <= 1500) {
             $zona = table_price::where('id',1)->first()->toArray();
@@ -40,6 +42,9 @@ class WebhookPriceController extends Controller
         $fec_max_entrega = new \DateTime('now', new \DateTimeZone('-03:00'));
         $fec_max_entrega -> modify('+2 day');
 
+        $bina = openssl_random_pseudo_bytes ( 4, $crypto_strong);
+        $randRefe = bin2hex($bina);
+
         $respu = [
             "rates" => [
                 [
@@ -51,12 +56,21 @@ class WebhookPriceController extends Controller
                     "type" => "ship",
                     "min_delivery_date" => $fec_min_entrega->format('Y-m-d\TH:i:sO'),  //"min_delivery_date": "2016-07-14T14:48:45-0300","2025-05-03T03:55:20+0000"
                     "max_delivery_date" => $fec_max_entrega->format('Y-m-d\TH:i:sO'),  //"max_delivery_date": "2016-07-17T14:48:45-0300",
-                    "phone_required" => true //,
-                    //"reference" => $data['carrier']['id']
+                    "phone_required" => true, //,
+                    "reference" => $randRefe //$data['carrier']['id']
                 ]
             ]
         ];
 
         return response()->json($respu);
+    }
+
+    public function grabar ($data)
+    {
+        $datos = new table_grabar;
+        $data = json_encode($data);
+        $datos -> info = $data;
+
+        $datos -> save();
     }
 }

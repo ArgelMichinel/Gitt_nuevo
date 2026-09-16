@@ -51,7 +51,9 @@
     <a href="{{ route('mostrarUpdate') }}">Actualizar envíos</a>
     <a href="{{ route('info_packets') }}">Consultar envíos sin registrar</a>
     <a href="{{ route('mostrarprecio') }}">Asignar precios a envíos</a>
+    <a href="{{ route('incluirEnvioGitt') }}">Crear envío Gitt</a>
     <a href="{{ route('infoCliente') }}">Info de cliente</a>
+    <a href="{{ route('agregarCliente') }}">Agregar Cliente</a>
     <a href="{{ route('registrarCadete') }}">Agregar Cadete</a>
     <a href="{{ route('mostrarCadete') }}">Listar Cadetes</a>
     <a href="{{ route('editarCadete') }}">Editar Cadete</a>

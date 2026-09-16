@@ -44,7 +44,7 @@ function menuenvios() {
   closemenu();
   let menuall = document.getElementById("mySidebar").children;
   
-  for (i = 1; i < 8; i++) {
+  for (i = 1; i < 9; i++) {
       menuall[i].style.display = "block";
   }
   openSiNav();    
@@ -54,7 +54,9 @@ function menuclientes() {
   closemenu();
   let menuall = document.getElementById("mySidebar").children;
   
-  menuall[8].style.display = "block";
+  for (i = 9; i < 11; i++) {
+      menuall[i].style.display = "block";
+  }
   
   openSiNav();    
 }
@@ -63,7 +65,7 @@ function menucadetes() {
   closemenu();
   let menuall = document.getElementById("mySidebar").children;
   
-  for (i = 9; i < 12; i++) {
+  for (i = 11; i < 14; i++) {
       menuall[i].style.display = "block";
   }
   openSiNav();     
@@ -73,7 +75,7 @@ function menuadminist() {
   closemenu();
   let menuall = document.getElementById("mySidebar").children;
   
-  for (i = 12; i < 14; i++) {
+  for (i = 14; i < 16; i++) {
       menuall[i].style.display = "block";
   }
   openSiNav();     

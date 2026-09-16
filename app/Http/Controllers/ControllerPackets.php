@@ -10,6 +10,8 @@ use App\Models\listas;
 //use App\Models\access_meli;
 use App\Services\MELIService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 class ControllerPackets extends Controller
 {
@@ -36,8 +38,10 @@ class ControllerPackets extends Controller
         $clients = clientes::all()->toArray();
         $cadetes = cadetes::all()->toArray();
         $admin = administ::all()->toArray();
+        $credencial = Auth::user();
+        $credencial = $credencial->master;
         
-        return view('query_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+        return view('query_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin', 'credencial'));
     }
 
     public function crearlista () {
@@ -127,8 +131,10 @@ class ControllerPackets extends Controller
             $clients = clientes::all()->toArray();
             $cadetes = cadetes::all()->toArray();
             $admin = administ::all()->toArray();
+            $credencial = Auth::user();
+            $credencial = $credencial->master;
             
-            return view('update_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+            return view('update_packets',compact('title', 'packets', 'clients', 'cadetes', 'admin', 'credencial'));
         }
         
     }
@@ -146,26 +152,96 @@ class ControllerPackets extends Controller
             $parameters[$i]['id_ship'] = $list_values[$i];
         }
         
-        $this->MELIService->update_by_lots('envios', 'id_ship', $parameters);
+        //dd($parameters);
+        
+        $this->MELIService->update_by_lots2('id_ship', $parameters);
         
         $title='Envíos Actualizados';
 
-        return view('update_success',compact('title', 'packets', 'clients', 'cadetes', 'admin'));
+        return view('update_success',compact('title'));
     }
 
     public function update_TN()
     {
-        $data = request()->input('envio');
-        $idship = (int) json_decode($data,true);
+        $data1 = request()->input('envio');
+        $status = request()->input('status');
+        $idship = json_decode($data1,true);
 
         //return $idship;
+        $envio = envios::where('id_ship','=',rtrim($idship))->first();
 
-        $envio = envios::where('id_ship','=',$idship)->first();
-        $envio->status = 'delivered';
-        $envio->save();
+        if ($status == 'first_visit') {
+            
+            $fecha_ahora = new \DateTime();
+            $fecha_ahora->modify('-3 hours');
+            $fecha_ahora= $fecha_ahora->format('Y-m-d H:i:s'); 
+            $envio->date_first_visit = $fecha_ahora;
+            $envio->admin_status = (int)Auth::id();
+            $envio->save();
+
+        } else if ($status == 'delivered') {
+
+            $fecha_ahora = new \DateTime();
+            $fecha_ahora->modify('-3 hours');
+            $fecha_ahora= $fecha_ahora->format('Y-m-d H:i:s'); 
+            $envio->date_delivered = $fecha_ahora;
+            $envio->status = $status;
+            $envio->admin_status = (int)Auth::id();
+            $envio->save();
+        } else if ($status == 'cancelled') {
+
+            $envio->status = $status;
+            $envio->admin_status = (int)Auth::id();
+            $envio->save();
+        }
+
 
         return 'Envio actualizado';
 
+    }
+
+        public function include_packs_gitt_adm ()
+    {
+        $request = request()->input('id');
+
+        if (isset($request)) {
+            $packet = envios::where('id_ship', $request)->first();
+            $title='Editar Paquete Gitt';
+
+        } else {
+            $packet = null;
+            $title='Ingresar Paquete Gitt';
+        }
+
+        //dd($request);
+
+        $clients = clientes::all();
+
+        return view('include_packs_gitt_adm', compact('title', 'clients', 'packet'));
+    }
+
+        public function include_packs_gitt_cli ()
+    {
+        $request = request()->input('id');
+
+        $dat_user = Auth::user();
+
+        if (isset($request)) {
+            $packet = envios::where('id_ship', $request)->first();
+            $cliente = clientes::where('id', $dat_user->id)->first();
+
+            if ($packet['sender_id'] != $cliente['id_Gitt']) {
+                dd('No tenés permiso para editar este paquete');
+            }
+            $title='Editar Paquete Gitt';
+
+        } else {
+            $packet = null;
+            $title='Ingresar Paquete Gitt';
+        }
+
+
+        return view('include_packs_gitt_cli', compact('title', 'dat_user', 'packet'));
     }
 
 }

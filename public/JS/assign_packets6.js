@@ -145,6 +145,23 @@ function pulsar() {
   
 }
 
+//////////////////////////
+
+function pulsar2() {
+  for (i = 0; i < document.getElementById("Cadetexyz").children.length; i++) {
+    if (document.getElementById("cadete_dummy").value == document.getElementById("Cadetexyz").children[i].value) {
+      cadete_valido = true;
+    }
+  }
+
+  if (cadete_valido == true) {
+    submit_array();
+  } else {
+    alert('Por favor, corrija el cadete porque no corresponde con ninguno de los existentes.');
+  }
+  
+}
+
 // Click on a close button to hide the current list item
 var close = document.getElementsByClassName("close");
 
